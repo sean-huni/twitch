@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: live
+  datasource:
+    url: jdbc:h2:mem:twitch;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS twitch
+    username: root
+    password: password
+    driver-class-name: org.h2.Driver
+    platform: h2
+    name: twitch
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  application:
+    name: Twitch
