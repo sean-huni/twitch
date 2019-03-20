@@ -10,5 +10,5 @@ package xyz.tag.twitch.constant;
  * CELL      : +27-64-906-8809
  */
 public class Constants {
-    public static final String REST_ELECTRO_DEV_ENDPOINT = "http://192.168.0.6:8083/api/v1";
+    public static final String REST_ELECTRO_DEV_ENDPOINT = "http://192.168.0.4:8083/api/v1";
 }
