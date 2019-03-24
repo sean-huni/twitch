@@ -1,21 +1,22 @@
 package xyz.tag.twitch.integration.controller;
 
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.runners.MethodSorters;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * PROJECT   : twitch
@@ -26,33 +27,36 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//@ExtendWith(SpringExtension.class)
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@WebAppConfiguration
-//@WebMvcTest(value = SwitchController.class)
+@AutoConfigureMockMvc //need this in Spring Boot test
+@Slf4j
 public class SwitchCtrlTests {
 
     @Autowired
-    private WebApplicationContext wac;
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void pretest() {
-        this.mockMvc = webAppContextSetup(wac).build();
+    @BeforeAll
+    public static void setUp() {
+        log.info("Kicking off tests...");
     }
 
-//    @Ignore("NullPointerException on mockMvc")
+    @AfterAll
+    public static void tearDown(){
+        log.info("Tearing down tests...");
+    }
+
     @Test
     public void aGivenAllDevices_whenRetrievingDevices_thenPass() throws Exception {
 
         assertNotNull(mockMvc);
-        mockMvc.perform(get("/api/v1/switch")
+        mockMvc.perform(get("/api/v1/devices")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andReturn();
+                .andExpect(jsonPath("$.[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.[0].id").isNumber())
+                .andExpect(jsonPath("$.[0].id").value(1));
     }
 }

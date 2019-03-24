@@ -23,6 +23,8 @@ import java.util.ArrayList;
  * CELL      : +27-64-906-8809
  */
 @SpringBootApplication
+//@EnableJpaRepositories(value = "xyz.tag.twitch.repo")
+//@EntityScan(basePackages = "xyz.tag.twitch.entity")
 public class TwitchApp {
     private DeviceRepo deviceRepo;
 
