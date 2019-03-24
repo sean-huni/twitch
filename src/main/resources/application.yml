@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: live
+#  profiles:
+#    active: live
   datasource:
     url: jdbc:mariadb://localhost:3306/twitch?createDatabaseIfNotExist=true
     username: root
@@ -18,3 +18,7 @@ spring:
     name: Twitch
 server:
   port: 8080
+
+purge:
+  cron:
+    expression: '*/10 * * * * *'
