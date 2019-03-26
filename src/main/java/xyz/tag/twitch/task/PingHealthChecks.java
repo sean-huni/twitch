@@ -11,9 +11,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import xyz.tag.twitch.dto.electrodev.RespHC;
 import xyz.tag.twitch.entity.RespHealthCheckDO;
+import xyz.tag.twitch.enums.DeviceType;
+import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.feign.DeviceHealthCheck;
 import xyz.tag.twitch.repo.RespHealthCheckRepo;
 import xyz.tag.twitch.util.CustomGsonDecoder;
+
+import java.time.LocalDateTime;
 
 import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 
@@ -47,17 +51,19 @@ public class PingHealthChecks {
 
     @Scheduled(cron = "${purge.cron.expression}")
     public void ping3rdPartyDevices() {
-        RespHealthCheckDO healthCheckDO;
 
-        final RespHC hostResp;
+        RespHC hostResp = null;
         try {
             hostResp = deviceHealthCheck.pingHostDevice();
-            healthCheckDO = respHCRespHealthCheckDOConverter.convert(hostResp);
+            log.debug("Device Response: {}", hostResp);
         } catch (RetryableException e) {
             log.error("Connection Exception", e);
+            hostResp = new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.UNREACHABLE, LocalDateTime.now());
         }  catch (Exception e) {
-            log.error("Caught Exception",e);
+            log.error("System Error", e);
+            hostResp = new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.SYSTEM_ERROR, LocalDateTime.now());
         } finally {
+            RespHealthCheckDO healthCheckDO = respHCRespHealthCheckDOConverter.convert(hostResp);
             respHealthCheckRepo.save(healthCheckDO);
             log.info("Host-Response: {}", hostResp);
         }

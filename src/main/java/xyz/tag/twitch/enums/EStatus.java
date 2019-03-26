@@ -10,9 +10,10 @@ package xyz.tag.twitch.enums;
  * CELL      : +27-64-906-8809
  */
 public enum EStatus {
-    ONLINE("ONLINE"), //The Device is Online
+    ONLINE("ONLINE"), //The Device is Online.
     OFFLINE("OFFLINE"), //The device in online but channel is unreachable.
-    UNREACHABLE("UNREACHABLE"); //The device & channel both are unavailable for use.
+    UNREACHABLE("UNREACHABLE"), //The device & channel both are unavailable for use.
+    SYSTEM_ERROR("SYSTEM_ERROR"); //Unknown Exception occurred.
 
     private final String status;
 

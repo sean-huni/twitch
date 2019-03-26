@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import xyz.tag.twitch.enums.DeviceType;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RespHC {
     private String name; // Device-Name
     @SerializedName("deviceType")
