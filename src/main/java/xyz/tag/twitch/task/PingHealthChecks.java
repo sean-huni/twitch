@@ -1,6 +1,7 @@
 package xyz.tag.twitch.task;
 
 import feign.Feign;
+import feign.RetryableException;
 import feign.gson.GsonEncoder;
 import feign.slf4j.Slf4jLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +47,19 @@ public class PingHealthChecks {
 
     @Scheduled(cron = "${purge.cron.expression}")
     public void ping3rdPartyDevices() {
-        final RespHC hostResp = deviceHealthCheck.pingHostDevice();
-        final RespHealthCheckDO healthCheckDO = respHCRespHealthCheckDOConverter.convert(hostResp);
-        respHealthCheckRepo.save(healthCheckDO);
-        log.info("Host-Response: {}", hostResp);
+        RespHealthCheckDO healthCheckDO;
+
+        final RespHC hostResp;
+        try {
+            hostResp = deviceHealthCheck.pingHostDevice();
+            healthCheckDO = respHCRespHealthCheckDOConverter.convert(hostResp);
+        } catch (RetryableException e) {
+            log.error("Connection Exception", e);
+        }  catch (Exception e) {
+            log.error("Caught Exception",e);
+        } finally {
+            respHealthCheckRepo.save(healthCheckDO);
+            log.info("Host-Response: {}", hostResp);
+        }
     }
 }
