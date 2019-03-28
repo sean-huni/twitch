@@ -57,7 +57,7 @@ public class PingHealthChecks {
             hostResp = deviceHealthCheck.pingHostDevice();
             log.debug("Device Response: {}", hostResp);
         } catch (RetryableException e) {
-            log.error("Connection Exception", e);
+            log.error("Connection Exception: "+e.getMessage());
             hostResp = new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.UNREACHABLE, LocalDateTime.now());
         }  catch (Exception e) {
             log.error("System Error", e);

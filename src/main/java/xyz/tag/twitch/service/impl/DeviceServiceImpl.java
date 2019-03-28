@@ -109,7 +109,7 @@ public class DeviceServiceImpl implements DeviceService {
             resp = electroDev.invokeSwitch(channel, req);
             log.setEStatus(EStatus.valueOf("ONLINE"));
         } catch (Exception e) {
-            LOGGER.info("HTTP Exception: {}", e.getMessage());
+            LOGGER.error("HTTP Exception: {}", e.getMessage());
             device.setOnn(false);
             log.setEStatus(EStatus.valueOf("UNREACHABLE"));
             log.setESwitch(ESwitch.valueOf("OFF"));

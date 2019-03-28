@@ -18,7 +18,7 @@ import java.net.URI;
  * CELL      : +27-64-906-8809
  */
 @RestController
-public class ErrorMapping {
+public class URIMappingCorrection {
 
     @GetMapping("/devices")
     public ResponseEntity<Object> redirectDevicesToHome(){
