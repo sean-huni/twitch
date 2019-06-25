@@ -1,4 +1,4 @@
-package xyz.tag.twitch.task;
+package xyz.tag.twitch.service.task;
 
 import feign.Feign;
 import feign.RetryableException;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import xyz.tag.twitch.dto.electrodev.RespHC;
 import xyz.tag.twitch.entity.RespHealthCheckDO;
 import xyz.tag.twitch.enums.DeviceType;
@@ -30,15 +30,15 @@ import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
-@Component
+@Service
 @Configuration
 @Slf4j
-public class PingHealthChecks {
+public class HealthService {
     private final RespHealthCheckRepo respHealthCheckRepo;
     private final DeviceHealthCheck deviceHealthCheck;
     private Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter;
 
-    public PingHealthChecks(RespHealthCheckRepo respHealthCheckRepo, Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter) {
+    public HealthService(RespHealthCheckRepo respHealthCheckRepo, Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter) {
         this.respHealthCheckRepo = respHealthCheckRepo;
         this.respHCRespHealthCheckDOConverter = respHCRespHealthCheckDOConverter;
         deviceHealthCheck = Feign.builder()

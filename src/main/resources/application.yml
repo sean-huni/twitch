@@ -1,16 +1,16 @@
 spring:
-#  profiles:
-#    active: live
+  #  profiles:
+  #    active: live
   datasource:
     url: jdbc:mariadb://localhost:3306/twitch?createDatabaseIfNotExist=true
     username: root
-    #    password: password
+    password: password
     driver-class-name: org.mariadb.jdbc.Driver
     name: twitch
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
