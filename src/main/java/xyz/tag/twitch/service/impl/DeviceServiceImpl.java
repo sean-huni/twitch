@@ -81,16 +81,13 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public void toggleSwitch(Long id, ESwitch option) throws DeviceNotFound {
         Optional<Device> optionalDevice = deviceRepo.findById(id);
-        if (optionalDevice.isEmpty()) {
-            throw new DeviceNotFound("Device ID: " + id + " not found.");
-        }
-        final Device device = optionalDevice.get();
-        Boolean b = option.getStatus().equals("ONN");
+        final Device device = optionalDevice.orElseThrow(() -> new DeviceNotFound("Device ID: " + id + " not found."));
+        final Boolean b = option.getStatus().equals("ONN");
         device.setOnn(b);
         EStatus status = EStatus.valueOf("ONLINE");
 
        final Req req = new Req(option);
-//
+
         final ElectroDev electroDev = Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
@@ -106,8 +103,12 @@ public class DeviceServiceImpl implements DeviceService {
 
             LOGGER.info("Extracted Device-Channel: {}", channel);
 
-            resp = electroDev.invokeSwitch(channel, req);
-            log.setEStatus(EStatus.valueOf("ONLINE"));
+            resp = invokeDeviceSwitch(req, electroDev, channel);
+            if (resp.getCode() >= 200) {
+                log.setEStatus(EStatus.valueOf("ONLINE"));
+            }else{
+                log.setEStatus(EStatus.valueOf("OFFLINE"));
+            }
         } catch (Exception e) {
             LOGGER.error("HTTP Exception: {}", e.getMessage());
             device.setOnn(false);
@@ -118,6 +119,11 @@ public class DeviceServiceImpl implements DeviceService {
         LOGGER.info("HTTP POST Response: {}", resp.toString());
         device.getLogs().add(log);
         deviceRepo.save(device);
+    }
+
+    public Resp invokeDeviceSwitch(Req req, ElectroDev electroDev, long channel) {
+        Resp resp = electroDev.invokeSwitch(channel, req);
+        return resp;
     }
 
     @Override

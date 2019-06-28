@@ -2,6 +2,7 @@ package xyz.tag.twitch.integration.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import xyz.tag.twitch.dto.electrodev.Req;
+import xyz.tag.twitch.dto.electrodev.Resp;
+import xyz.tag.twitch.feign.ElectroDev;
+import xyz.tag.twitch.service.DeviceService;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,8 +45,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public class SwitchCtrlTests {
 
+    private final Resp resp = new Resp(200, "Successful");
+
     @Autowired
     private MockMvc mockMvc;
+    private DeviceService deviceService = spy(DeviceService.class);
 
     @BeforeAll
     public static void setUp() {
@@ -45,6 +59,12 @@ public class SwitchCtrlTests {
     @AfterAll
     public static void tearDown(){
         log.info("Tearing down tests...");
+    }
+
+    @Before
+    public void beforeEachTest(){
+        this.mockMvc = MockMvcBuilders.standaloneSetup(deviceService).build();
+        when(deviceService.invokeDeviceSwitch(isA(Req.class), isA(ElectroDev.class), isA(Long.class))).thenReturn(resp);
     }
 
     @Test
@@ -58,5 +78,20 @@ public class SwitchCtrlTests {
                 .andExpect(jsonPath("$.[0].id").isNotEmpty())
                 .andExpect(jsonPath("$.[0].id").isNumber())
                 .andExpect(jsonPath("$.[0].id").value(1));
+    }
+
+    @Test
+    public void bGivenAllDevicesById_whenUpdatingDevice_thenToggleSwitch() throws Exception {
+        assertNotNull(mockMvc);
+//        doNothing().when(deviceService).toggleSwitch(isA(Long.class), isA(ESwitch.class));
+
+        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01?switch=ONN")
+                .contentType("application/json;charset=UTF-8"))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        log.info("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
+//                .andExpect(jsonPath())
     }
 }
