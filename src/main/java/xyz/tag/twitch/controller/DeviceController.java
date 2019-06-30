@@ -11,6 +11,8 @@ import xyz.tag.twitch.exception.DeviceNotFound;
 import xyz.tag.twitch.service.DeviceService;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * PROJECT   : twitch
@@ -32,8 +34,10 @@ public class DeviceController {
     }
 
     @GetMapping
-    public Collection<DeviceDTO> getAllDevices() {
-        return deviceService.findAllDevices();
+    public Map<String, Collection<DeviceDTO>> getAllDevices() {
+        final Map<String, Collection<DeviceDTO>> devicesMap = new HashMap<>();
+        devicesMap.put("devices", deviceService.findAllDevices());
+        return devicesMap;
     }
 
     @GetMapping("{id}/logs")

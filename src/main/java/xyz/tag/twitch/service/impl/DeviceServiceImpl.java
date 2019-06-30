@@ -1,9 +1,5 @@
 package xyz.tag.twitch.service.impl;
 
-import feign.Feign;
-import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
-import feign.slf4j.Slf4jLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +14,14 @@ import xyz.tag.twitch.entity.Log;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
-import xyz.tag.twitch.feign.ElectroDev;
 import xyz.tag.twitch.repo.DeviceRepo;
 import xyz.tag.twitch.service.DeviceService;
+import xyz.tag.twitch.service.RaspberryPiService;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 
 /**
  * PROJECT   : twitch
@@ -41,11 +35,13 @@ import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 @Service
 public class DeviceServiceImpl implements DeviceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceServiceImpl.class);
+    private RaspberryPiService raspberryPiService;
     private DeviceRepo deviceRepo;
     private Converter<Device, DeviceDTO> toDeviceDTO;
     private Converter<DeviceDTO, Device> toDeviceDO;
     private Converter<Log, LogDTO> toLogDTO;
     private Converter<LogDTO, Log> toLogDO;
+
 
     public DeviceServiceImpl(DeviceRepo deviceRepo) {
         this.deviceRepo = deviceRepo;
@@ -71,6 +67,11 @@ public class DeviceServiceImpl implements DeviceService {
         this.toLogDO = toLogDO;
     }
 
+    @Autowired
+    public void setRaspberryPiService(RaspberryPiService raspberryPiService) {
+        this.raspberryPiService = raspberryPiService;
+    }
+
     /**
      * Turns the switch Onn or Off
      *
@@ -86,31 +87,24 @@ public class DeviceServiceImpl implements DeviceService {
         device.setOnn(b);
         EStatus status = EStatus.valueOf("ONLINE");
 
-       final Req req = new Req(option);
-
-        final ElectroDev electroDev = Feign.builder()
-                .encoder(new GsonEncoder())
-                .decoder(new GsonDecoder())
-                .logger(new Slf4jLogger())
-                .logLevel(feign.Logger.Level.FULL)
-                .target(ElectroDev.class, REST_ELECTRO_DEV_ENDPOINT);
+        final Req req = new Req(option);
 
         LOGGER.info("HTTP POST Req: {}", req.toString());
         Resp resp = new Resp();
         final Log log = new Log(option, status, ZonedDateTime.now(), null);
         try {
-           final long channel = Long.parseLong(device.getChannel());
+            final long channel = Long.parseLong(device.getChannel());
 
             LOGGER.info("Extracted Device-Channel: {}", channel);
 
-            resp = invokeDeviceSwitch(req, electroDev, channel);
+            resp = raspberryPiService.invokeDeviceSwitch(req, channel);
             if (resp.getCode() >= 200) {
                 log.setEStatus(EStatus.valueOf("ONLINE"));
-            }else{
+            } else {
                 log.setEStatus(EStatus.valueOf("OFFLINE"));
             }
         } catch (Exception e) {
-            LOGGER.error("HTTP Exception: {}", e.getMessage());
+            LOGGER.error("HTTP Exception: {}", e.getMessage(), e);
             device.setOnn(false);
             log.setEStatus(EStatus.valueOf("UNREACHABLE"));
             log.setESwitch(ESwitch.valueOf("OFF"));
@@ -121,10 +115,6 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRepo.save(device);
     }
 
-    public Resp invokeDeviceSwitch(Req req, ElectroDev electroDev, long channel) {
-        Resp resp = electroDev.invokeSwitch(channel, req);
-        return resp;
-    }
 
     @Override
     public Collection<DeviceDTO> findAllDevices() {

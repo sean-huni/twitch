@@ -2,11 +2,8 @@ package xyz.tag.twitch.service;
 
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
-import xyz.tag.twitch.dto.electrodev.Req;
-import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
-import xyz.tag.twitch.feign.ElectroDev;
 
 import java.util.Collection;
 
@@ -32,6 +29,4 @@ public interface DeviceService {
     Collection<DeviceDTO> findAllDevices();
 
     Collection<LogDTO> findDeviceLogs(Long id);
-
-    Resp invokeDeviceSwitch(Req req, ElectroDev electroDev, long channel);
 }
