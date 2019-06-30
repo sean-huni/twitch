@@ -41,8 +41,10 @@ public class DeviceController {
     }
 
     @GetMapping("{id}/logs")
-    public Collection<LogDTO> getDeviceLogs(@PathVariable("id") Long id) {
-        return deviceService.findDeviceLogs(id);
+    public Map<String, Collection<LogDTO>> getDeviceLogs(@PathVariable("id") Long id) {
+        Map<String, Collection<LogDTO>> logsMap = new HashMap<>();
+        logsMap.put("logs", deviceService.findDeviceLogs(id));
+        return logsMap;
     }
 
     @PutMapping("{id}")

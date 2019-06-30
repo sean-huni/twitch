@@ -8,16 +8,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
+import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.service.RaspberryPiService;
 
@@ -53,7 +54,7 @@ public class SwitchCtrlTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private RaspberryPiService raspberryPiService;
 
     @BeforeAll
@@ -78,7 +79,7 @@ public class SwitchCtrlTests {
     }
 
     @Test
-    public void aGivenAllDevices_whenRetrievingDevices_thenReturnAllDevices() throws Exception {
+    public void aGiven_whenRetrievingDevices_thenReturnAllDevices() throws Exception {
 
         assertNotNull(mockMvc);
         mockMvc.perform(get("/api/v1/devices")
@@ -95,7 +96,27 @@ public class SwitchCtrlTests {
     }
 
     @Test
-    public void bGivenAllDevicesById_whenUpdatingDevice_thenToggleSwitch() throws Exception {
+    public void bGivenDeviceId_whenRetrievingDeviceLogs_thenReturnDeviceLogs() throws Exception {
+        assertNotNull(mockMvc);
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/devices/01/logs")
+                .contentType("application/json;charset=UTF-8"))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$['logs'][0]['id']").isNotEmpty())
+                .andExpect(jsonPath("$['logs'][0]['id']").isNumber())
+                .andExpect(jsonPath("$['logs'][0]['id']").value(2))
+                .andExpect(jsonPath("$['logs'][0]['eswitch']").value(ESwitch.OFF.getStatus()))
+                .andExpect(jsonPath("$['logs'][0]['estatus']").value(EStatus.UNREACHABLE.getStatus()))
+                .andReturn();
+//                .andExpect(jsonPath("$['devices'][0]['id']").isNotEmpty())
+//                .andExpect(jsonPath("$['devices'][0]['id']").isNumber())
+//                .andExpect(jsonPath("$['devices'][0]['id']").value(1));
+
+        log.info("Device ID-01 Logs: {}", mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    public void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
 //        doNothing().when(deviceService).toggleSwitch(isA(Long.class), isA(ESwitch.class));
 //        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenReturn(resp);
