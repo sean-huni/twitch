@@ -2,11 +2,16 @@ package xyz.tag.twitch.integration.feign;
 
 import feign.Feign;
 import feign.gson.GsonEncoder;
+import feign.mock.HttpMethod;
+import feign.mock.MockClient;
 import feign.slf4j.Slf4jLogger;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import xyz.tag.twitch.dto.electrodev.RespHC;
 import xyz.tag.twitch.enums.DeviceType;
@@ -18,7 +23,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
+import static org.mockito.Mockito.when;
 
 /**
  * PROJECT   : twitch
@@ -32,26 +37,56 @@ import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 public class FeignHostPingTest {
-    private DeviceHealthCheck electroDev;
+    private static final String REST_DEV_HEALTH_TEST_ENDPOINT = "http://192.168.0.146:8083/api/v1";
+
+    @Mock
+    private DeviceHealthCheck deviceHealthCheck;
+    private MockClient mockClient;
 
     @BeforeEach
     public void pretest() {
-        electroDev = Feign.builder()
+        mockClient = new MockClient().noContent(HttpMethod.PUT, "/device/{id}");
+
+        deviceHealthCheck = Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new CustomGsonDecoder())
                 .logger(new Slf4jLogger())
                 .logLevel(feign.Logger.Level.FULL)
-                .target(DeviceHealthCheck.class, REST_ELECTRO_DEV_ENDPOINT);
+                .client(mockClient)
+//                .target(new MockTarget<>(DeviceHealthCheck.class));
+                .target(DeviceHealthCheck.class, REST_DEV_HEALTH_TEST_ENDPOINT);
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        mockClient.verifyStatus();
     }
 
     @Test
-    public void testFeignSwitch() {
-        final RespHC hostResp = electroDev.pingHostDevice();
+    public void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
+        when(deviceHealthCheck.pingHostDevice())
+                .thenReturn(new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.ONLINE, LocalDateTime.now()));
+        final RespHC hostResp = deviceHealthCheck.pingHostDevice();
 
         log.info("Host-Response: {}", hostResp);
 
         assertEquals(EStatus.ONLINE, hostResp.getEStatus());
         assertEquals(DeviceType.HOST_DEVICE.getDeviceStatus(), hostResp.getDeviceType().getDeviceStatus());
+        assertEquals("RPi-1", hostResp.getName());
+        assertTrue(hostResp.getLDateTime().isAfter(LocalDateTime.now().minusSeconds(2)));
+    }
+
+    @Test
+    public void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
+        when(deviceHealthCheck.pingChannel(1L))
+                .thenReturn(new RespHC("RPi-1", DeviceType.RELAY_CHANNEL, EStatus.ONLINE, LocalDateTime.now()));
+        final RespHC hostResp = deviceHealthCheck.pingChannel(1L);
+
+        log.info("Host-Response: {}", hostResp);
+
+        assertEquals(EStatus.ONLINE, hostResp.getEStatus());
+        assertEquals(DeviceType.RELAY_CHANNEL.getDeviceStatus(), hostResp.getDeviceType().getDeviceStatus());
         assertEquals("RPi-1", hostResp.getName());
         assertTrue(hostResp.getLDateTime().isAfter(LocalDateTime.now().minusSeconds(2)));
     }
