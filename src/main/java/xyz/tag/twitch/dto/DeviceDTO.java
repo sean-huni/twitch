@@ -22,6 +22,8 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonRootName(value = "device")
+//@JsonTypeName("device")
+//@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT ,use = JsonTypeInfo.Id.NAME)
 public class DeviceDTO {
     private Long id;
     @Getter(AccessLevel.NONE)

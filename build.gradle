@@ -25,7 +25,6 @@ ext {
 }
 
 dependencies {
-   
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -36,15 +35,15 @@ dependencies {
     implementation 'io.github.openfeign:feign-core:10.2.0'
     implementation 'com.netflix.feign:feign-gson:8.18.0'
     implementation 'com.netflix.feign:feign-slf4j:8.18.0'
-    
+
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
     compile "io.springfox:springfox-bean-validators:2.9.2"
     compileOnly 'org.projectlombok:lombok'
-    
+
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 //    runtimeOnly 'mysql:mysql-connector-java'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.4.0'
-    
+
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2'
@@ -52,7 +51,12 @@ dependencies {
 //    testImplementation 'org.junit.platform:junit-platform-runner'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'io.github.openfeign:feign-mock:10.2.0'
+    testCompile 'org.mockito:mockito-core'
+    testCompile 'org.mockito:mockito-junit-jupiter'
+    testCompile 'org.projectlombok:lombok'
 }
 
 dependencyManagement {
