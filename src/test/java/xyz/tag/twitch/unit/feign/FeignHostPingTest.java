@@ -1,4 +1,4 @@
-package xyz.tag.twitch.integration.feign;
+package xyz.tag.twitch.unit.feign;
 
 import feign.Feign;
 import feign.gson.GsonEncoder;
