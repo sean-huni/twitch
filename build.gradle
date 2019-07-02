@@ -8,7 +8,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'xyz.tag'
 version = '1'
-sourceCompatibility = '11'
+sourceCompatibility = '12'
 
 configurations {
     compileOnly {
