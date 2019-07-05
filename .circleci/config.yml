@@ -47,9 +47,9 @@ jobs:
 
       # Code Quality Metrics (Sonarqube)
       - run:
-        name: Code Quality Metrics (Sonarqube)
-          command: ./gradlew sonarqube
-          -Dsonar.projectKey=sean-huni_twitch
-          -Dsonar.organization=sean-huni-github
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=162248aeafe59568304caa3c2e4276a7418e0525
+          name: Code Quality Metrics (Sonarqube)
+            command: ./gradlew sonarqube
+            -Dsonar.projectKey=sean-huni_twitch
+            -Dsonar.organization=sean-huni-github
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.login=162248aeafe59568304caa3c2e4276a7418e0525
