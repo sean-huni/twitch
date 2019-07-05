@@ -75,9 +75,8 @@ public class DeviceServiceImpl implements DeviceService {
     /**
      * Turns the switch Onn or Off
      *
-     * @param id
-     * @param option
-     * @return
+     * @param id of the Device in question.
+     * @param option To indicate the operation applied to the switch.
      */
     @Override
     public void toggleSwitch(Long id, ESwitch option) throws DeviceNotFound {
@@ -89,7 +88,7 @@ public class DeviceServiceImpl implements DeviceService {
 
         final Req req = new Req(option);
 
-        LOGGER.info("HTTP POST Req: {}", req.toString());
+        LOGGER.info("HTTP POST Req: {}", req);
         Resp resp = new Resp();
         final Log log = new Log(option, status, ZonedDateTime.now(), null);
         try {
@@ -110,7 +109,7 @@ public class DeviceServiceImpl implements DeviceService {
             log.setESwitch(ESwitch.valueOf("OFF"));
         }
         log.setRespDateTime(ZonedDateTime.now());
-        LOGGER.info("HTTP POST Response: {}", resp.toString());
+        LOGGER.info("HTTP POST Response: {}", resp);
         device.getLogs().add(log);
         deviceRepo.save(device);
     }
@@ -123,6 +122,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     public Collection<LogDTO> findDeviceLogs(Long id) {
-        return deviceRepo.findById(id).get().getLogs().stream().map(toLogDTO::convert).collect(Collectors.toList());
+        final Device newDevice = deviceRepo.findById(id).orElse(null);
+        return newDevice != null ? newDevice.getLogs().stream().map(toLogDTO::convert).collect(Collectors.toList()) : null;
     }
 }
