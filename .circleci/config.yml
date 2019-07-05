@@ -45,10 +45,8 @@ jobs:
       # run tests!
       - run: gradle test
 
-      # Code Quality Metrics (Sonarqube)
-      - run:
-          name: Code Quality Metrics (Sonarqube)
-            command: ./gradlew sonarqube
+      # Code Quality Metrics (Sonarqube) >> Code Quality Metrics (Sonarqube)
+      - run: ./gradlew sonarqube
             -Dsonar.projectKey=sean-huni_twitch
             -Dsonar.organization=sean-huni-github
             -Dsonar.host.url=https://sonarcloud.io
