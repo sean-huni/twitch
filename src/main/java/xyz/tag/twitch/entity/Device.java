@@ -31,7 +31,7 @@ public class Device {
     private String type;
     private String channel;
     private LocalDateTime localDateTime;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id")
     private Collection<Log> logs = new ArrayList<>();
 

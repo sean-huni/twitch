@@ -38,10 +38,7 @@ public class DeviceServiceImpl implements DeviceService {
     private RaspberryPiService raspberryPiService;
     private DeviceRepo deviceRepo;
     private Converter<Device, DeviceDTO> toDeviceDTO;
-    private Converter<DeviceDTO, Device> toDeviceDO;
     private Converter<Log, LogDTO> toLogDTO;
-    private Converter<LogDTO, Log> toLogDO;
-
 
     public DeviceServiceImpl(DeviceRepo deviceRepo) {
         this.deviceRepo = deviceRepo;
@@ -53,18 +50,8 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Autowired
-    public void setToDeviceDO(Converter<DeviceDTO, Device> toDeviceDO) {
-        this.toDeviceDO = toDeviceDO;
-    }
-
-    @Autowired
     public void setToLogDTO(Converter<Log, LogDTO> toLogDTO) {
         this.toLogDTO = toLogDTO;
-    }
-
-    @Autowired
-    public void setToLogDO(Converter<LogDTO, Log> toLogDO) {
-        this.toLogDO = toLogDO;
     }
 
     @Autowired
@@ -75,7 +62,7 @@ public class DeviceServiceImpl implements DeviceService {
     /**
      * Turns the switch Onn or Off
      *
-     * @param id of the Device in question.
+     * @param id     of the Device in question.
      * @param option To indicate the operation applied to the switch.
      */
     @Override

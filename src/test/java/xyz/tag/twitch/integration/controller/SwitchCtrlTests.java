@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc //need this in Spring Boot test
 @Slf4j
-public class SwitchCtrlTests {
+class SwitchCtrlTests {
 
     private final Req req = new Req(ESwitch.ONN);
     private final Resp resp = new Resp(200, "Successful");
@@ -58,12 +58,12 @@ public class SwitchCtrlTests {
     private RaspberryPiService raspberryPiService;
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         log.info("Kicking off tests...");
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
         log.info("Tearing down tests...");
     }
 
@@ -79,7 +79,7 @@ public class SwitchCtrlTests {
     }
 
     @Test
-    public void aGiven_whenRetrievingDevices_thenReturnAllDevices() throws Exception {
+    void aGivenMvcMock_whenGetDevicesViaRestAPI_thenReturnAllDevices() throws Exception {
 
         assertNotNull(mockMvc);
         mockMvc.perform(get("/api/v1/devices")
@@ -96,7 +96,7 @@ public class SwitchCtrlTests {
     }
 
     @Test
-    public void bGivenDeviceId_whenRetrievingDeviceLogs_thenReturnDeviceLogs() throws Exception {
+    void bGivenDeviceId_whenRetrievingDeviceLogs_thenReturnDeviceLogs() throws Exception {
         assertNotNull(mockMvc);
         final MvcResult mvcResult = mockMvc.perform(get("/api/v1/devices/01/logs")
                 .contentType("application/json;charset=UTF-8"))
@@ -116,7 +116,7 @@ public class SwitchCtrlTests {
     }
 
     @Test
-    public void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
+    void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
 //        doNothing().when(deviceService).toggleSwitch(isA(Long.class), isA(ESwitch.class));
 //        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenReturn(resp);

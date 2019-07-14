@@ -12,7 +12,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
@@ -22,3 +22,6 @@ spring:
 purge:
   cron:
     expression: '*/10 * * * * *'
+
+server:
+  port: 80

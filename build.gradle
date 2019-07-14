@@ -3,9 +3,9 @@ plugins {
     id 'java'
     id "org.sonarqube" version "2.7"
 }
-
+// Codecov: b8facb7d-06f4-4c48-bb3f-3de04cec6d07
 apply plugin: 'io.spring.dependency-management'
-
+apply plugin: 'jacoco'
 
 group = 'xyz.tag'
 version = '1'
@@ -24,6 +24,59 @@ repositories {
 ext {
     set('springBootAdminVersion', '2.1.3')
 }
+
+
+//test {
+//    jacoco {
+//        append = false
+//        reports {
+//            xml.enabled true
+//            xml.destination "${buildDir}/reports/jacoco/report.xml"
+//            html.enabled false
+//            csv.enabled false
+//        }
+//    }
+//}
+
+//jacocoTestReport {
+//    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
+//    reports {
+//        xml.enabled false
+//        csv.enabled false
+//        html.enabled true
+////        html.destination "${buildDir}/jacoco/html"
+////        html.destination "${buildDir}/reports/jacoco/html"
+//    }
+//}
+
+task codeCoverageReport(type: JacocoReport) {
+    dependsOn = subprojects.test
+//    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+//    classDirectories =  files(subprojects.sourceSets.main.output)
+//    executionData = files(subprojects.jacocoTestReport.executionData)
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    subprojects.each {
+        sourceSets xyz.tag.twitch
+        test
+    }
+
+    reports {
+        xml.enabled true
+//        xml.destination "${buildDir}/reports/jacoco/report.xml"
+        html.enabled true
+        csv.enabled true
+    }
+}
+
+codeCoverageReport.dependsOn {
+    test
+}
+
+test {
+    finalizedBy codeCoverageReport
+}
+
 /*
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
