@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
+import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.ESwitch;
@@ -22,6 +23,7 @@ import xyz.tag.twitch.service.RaspberryPiService;
 
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -74,5 +76,14 @@ class DeviceServiceImplTest {
 
         assertNotNull(deviceLogs);
         assertTrue(deviceLogs.size() >= 1);
+    }
+
+    @Test
+    void givenDeviceService_whenMeshUpRollingLogs_thenReturnRollingLogs() {
+        Collection<RollingLogDTO> rLogs = deviceService.meshUpRollingLogs();
+
+        assertNotNull(rLogs);
+        assertFalse(rLogs.isEmpty());
+        assertTrue(rLogs.size() > 2);
     }
 }

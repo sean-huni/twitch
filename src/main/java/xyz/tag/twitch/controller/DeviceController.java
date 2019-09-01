@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
+import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
 import xyz.tag.twitch.service.DeviceService;
@@ -38,6 +39,13 @@ public class DeviceController {
         final Map<String, Collection<DeviceDTO>> devicesMap = new HashMap<>();
         devicesMap.put("devices", deviceService.findAllDevices());
         return devicesMap;
+    }
+
+    @GetMapping("rolling-logs")
+    public Map<String, Collection<RollingLogDTO>> getDeviceLogs() {
+        Map<String, Collection<RollingLogDTO>> rollingLogsMap = new HashMap<>();
+        rollingLogsMap.put("rolling-logs", deviceService.meshUpRollingLogs());
+        return rollingLogsMap;
     }
 
     @GetMapping("{id}/logs")
