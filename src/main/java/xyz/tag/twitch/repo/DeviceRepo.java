@@ -15,4 +15,5 @@ import xyz.tag.twitch.entity.Device;
  */
 @Repository
 public interface DeviceRepo extends JpaRepository<Device, Long> {
+    Device findByLogsId(Long id);
 }

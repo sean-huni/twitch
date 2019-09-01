@@ -93,6 +93,7 @@ class SwitchCtrlTests {
                 .andExpect(jsonPath("$['devices'][3]['id']").isNotEmpty())
                 .andExpect(jsonPath("$['devices'][3]['id']").isNumber())
                 .andExpect(jsonPath("$['devices'][3]['id']").value(7));
+
     }
 
     @Test
@@ -112,7 +113,7 @@ class SwitchCtrlTests {
 //                .andExpect(jsonPath("$['devices'][0]['id']").isNumber())
 //                .andExpect(jsonPath("$['devices'][0]['id']").value(1));
 
-        log.info("Device ID-01 Logs: {}", mvcResult.getResponse().getContentAsString());
+        log.debug("Device ID-01 Logs: {}", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
@@ -129,7 +130,23 @@ class SwitchCtrlTests {
         verify(raspberryPiService, times(1)).invokeDeviceSwitch(req, 1L);
         verifyZeroInteractions(raspberryPiService);
 
-        log.info("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
+        log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
 //                .andExpect(jsonPath())
+    }
+
+    @Test
+    void dGivenRestController_whenHttpGetRollingLogs_thenReturnRollingLogs() throws Exception {
+        assertNotNull(mockMvc);
+
+        final MvcResult resp = mockMvc.perform(get("/api/v1/devices/rolling-logs")
+                .contentType("application/json;charset=UTF-8"))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$['rolling-logs'][0]['dateTime']").isNotEmpty())
+                .andExpect(jsonPath("$['rolling-logs'][0]['status']").exists())
+                .andExpect(jsonPath("$['rolling-logs'][0]['item']").isString())
+                .andReturn();
+
+        log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
     }
 }

@@ -2,6 +2,7 @@ package xyz.tag.twitch.service;
 
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
+import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
 
@@ -29,4 +30,6 @@ public interface DeviceService {
     Collection<DeviceDTO> findAllDevices();
 
     Collection<LogDTO> findDeviceLogs(Long id);
+
+    Collection<RollingLogDTO> meshUpRollingLogs();
 }
