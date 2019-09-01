@@ -2,6 +2,7 @@ package xyz.tag.twitch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import xyz.tag.twitch.entity.Device;
 import xyz.tag.twitch.entity.Log;
 import xyz.tag.twitch.enums.EStatus;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
  * CELL      : +27-64-906-8809
  */
 @SpringBootApplication
+@EnableScheduling
 public class TwitchApp {
     private DeviceRepo deviceRepo;
 

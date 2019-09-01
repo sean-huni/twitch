@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: live
+#  profiles:
+#    active: dev
   datasource:
     url: jdbc:h2:mem:twitch;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS twitch
     username: root
@@ -12,9 +12,16 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.H2Dialect
   application:
     name: Twitch
+
+purge:
+  cron:
+    expression: '*/10 * * * * *'
+
+server:
+  port: 80

@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
+import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
 import xyz.tag.twitch.service.DeviceService;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * PROJECT   : twitch
@@ -32,13 +35,24 @@ public class DeviceController {
     }
 
     @GetMapping
-    public Collection<DeviceDTO> getAllDevices() {
-        return deviceService.findAllDevices();
+    public Map<String, Collection<DeviceDTO>> getAllDevices() {
+        final Map<String, Collection<DeviceDTO>> devicesMap = new HashMap<>();
+        devicesMap.put("devices", deviceService.findAllDevices());
+        return devicesMap;
+    }
+
+    @GetMapping("rolling-logs")
+    public Map<String, Collection<RollingLogDTO>> getDeviceLogs() {
+        Map<String, Collection<RollingLogDTO>> rollingLogsMap = new HashMap<>();
+        rollingLogsMap.put("rolling-logs", deviceService.meshUpRollingLogs());
+        return rollingLogsMap;
     }
 
     @GetMapping("{id}/logs")
-    public Collection<LogDTO> getDeviceLogs(@PathVariable("id") Long id) {
-        return deviceService.findDeviceLogs(id);
+    public Map<String, Collection<LogDTO>> getDeviceLogs(@PathVariable("id") Long id) {
+        Map<String, Collection<LogDTO>> logsMap = new HashMap<>();
+        logsMap.put("logs", deviceService.findDeviceLogs(id));
+        return logsMap;
     }
 
     @PutMapping("{id}")
