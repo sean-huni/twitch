@@ -13,7 +13,10 @@ import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.service.RaspberryPiService;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * PROJECT   : twitch

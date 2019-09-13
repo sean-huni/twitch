@@ -21,12 +21,12 @@ import java.net.URI;
 public class URIMappingCorrection {
 
     @GetMapping("/devices")
-    public ResponseEntity<Object> redirectDevicesToHome(){
+    public ResponseEntity<Object> redirectDevicesToHome() {
         return getResponseEntity();
     }
 
     @GetMapping("/home")
-    public ResponseEntity<Object> redirectHomeToHome(){
+    public ResponseEntity<Object> redirectHomeToHome() {
         return getResponseEntity();
     }
 

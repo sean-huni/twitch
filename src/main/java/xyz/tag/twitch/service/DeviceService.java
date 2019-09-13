@@ -21,6 +21,7 @@ public interface DeviceService {
 
     /**
      * Turns the switch Onn or Off
+     *
      * @param id
      * @param option
      * @return
