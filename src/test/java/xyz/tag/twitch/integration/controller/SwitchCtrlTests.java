@@ -112,9 +112,6 @@ class SwitchCtrlTests {
                 .andExpect(jsonPath("$['logs'][0]['eswitch']").value(ESwitch.OFF.getStatus()))
                 .andExpect(jsonPath("$['logs'][0]['estatus']").value(EStatus.UNREACHABLE.getStatus()))
                 .andReturn();
-//                .andExpect(jsonPath("$['devices'][0]['id']").isNotEmpty())
-//                .andExpect(jsonPath("$['devices'][0]['id']").isNumber())
-//                .andExpect(jsonPath("$['devices'][0]['id']").value(1));
 
         log.debug("Device ID-01 Logs: {}", mvcResult.getResponse().getContentAsString());
     }
@@ -122,8 +119,6 @@ class SwitchCtrlTests {
     @Test
     void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
-//        doNothing().when(deviceService).toggleSwitch(isA(Long.class), isA(ESwitch.class));
-//        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenReturn(resp);
         final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01?switch=ONN")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
@@ -134,7 +129,6 @@ class SwitchCtrlTests {
         verifyZeroInteractions(raspberryPiService);
 
         log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
-//                .andExpect(jsonPath())
     }
 
     @Test

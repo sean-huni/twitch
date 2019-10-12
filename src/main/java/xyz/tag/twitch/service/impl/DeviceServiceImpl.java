@@ -26,7 +26,6 @@ import xyz.tag.twitch.service.RaspberryPiService;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -139,15 +138,15 @@ public class DeviceServiceImpl implements DeviceService {
     public Collection<RollingLogDTO> meshUpRollingLogs() {
         final Collection<RespHealthCheckDO> deviceLogs = healthCheckRepo.findAll();     // Device Ping Health Logs.
         final Collection<Log> opLogs = new ArrayList<>();   //Channel Operational Logs.
-        deviceRepo.findAll().parallelStream().map(Device::getLogs).forEach(logs -> opLogs.addAll(logs));
+        deviceRepo.findAll().parallelStream().map(Device::getLogs).forEach(opLogs::addAll);
         List<RollingLogDTO> rollingLogs = (List<RollingLogDTO>) toRollingLogsDTO.convert(new LogsMapper(opLogs, deviceLogs));
-        rollingLogs.parallelStream().filter(rLog -> Objects.nonNull(rLog) && Objects.nonNull(rLog.getDeviceId())).forEach(rLog -> {
+        Objects.requireNonNull(rollingLogs).parallelStream().filter(rLog -> Objects.nonNull(rLog) && Objects.nonNull(rLog.getDeviceId())).forEach(rLog -> {
             final Device device = deviceRepo.findByLogsId(rLog.getDeviceId());
             final String itemName = new StringBuilder().append(device.getLocation()).append(" ").append(device.getType()).toString();
             rLog.setItem(itemName);
         });
 
-        Collections.sort(rollingLogs, comparing(RollingLogDTO::getDateTime));
+        rollingLogs.sort(comparing(RollingLogDTO::getDateTime));
         return rollingLogs;
     }
 }

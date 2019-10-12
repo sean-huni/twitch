@@ -62,7 +62,6 @@ public class DeviceController {
 
     @PutMapping("{id}")
     public void toggleSwitch(@PathVariable("id") Long id, @RequestParam("switch") ESwitch option) {
-//       final EnumSwitch option = !sw.isEmpty() && sw.equals("0") ? EnumSwitch.OFF : EnumSwitch.ONN;
         log.info("Incoming PUT-Req: device-id: {}, switch: {}", id, option);
         try {
             deviceService.toggleSwitch(id, option);
