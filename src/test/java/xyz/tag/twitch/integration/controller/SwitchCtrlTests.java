@@ -119,7 +119,8 @@ class SwitchCtrlTests {
     @Test
     void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
-        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01?switch=ONN")
+        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01")
+                .content("{\"status\": \"ONN\"}")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())

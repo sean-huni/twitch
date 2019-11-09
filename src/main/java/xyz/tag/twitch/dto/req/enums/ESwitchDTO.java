@@ -1,6 +1,9 @@
-package xyz.tag.twitch.enums;
+package xyz.tag.twitch.dto.req.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -12,14 +15,12 @@ import lombok.ToString;
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
+
 @Getter
 @ToString
-public enum ESwitch {
-    OFF("OFF"), ONN("ONN");
-
-    private final String status;
-
-    ESwitch(String status) {
-        this.status = status;
-    }
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+public class ESwitchDTO {
+    private String status;
 }
