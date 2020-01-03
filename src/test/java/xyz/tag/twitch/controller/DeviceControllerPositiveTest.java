@@ -1,4 +1,4 @@
-package xyz.tag.twitch.integration.controller;
+package xyz.tag.twitch.controller;
 
 
 import feign.RetryableException;
@@ -49,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc //need this in Spring Boot test
 @Slf4j
-class SwitchCtrlTests {
+class DeviceControllerPositiveTest {
 
     private final Req req = new Req(ESwitch.ONN);
     private final Resp resp = new Resp(200, "Successful");
@@ -72,13 +72,13 @@ class SwitchCtrlTests {
 
     @BeforeEach
     void beforeEachTest() {
+        MockitoAnnotations.initMocks(this);
 //        this.mockMvc = MockMvcBuilders.standaloneSetup(deviceService).build();
         try {
             lenient().when(raspberryPiService.invokeDeviceSwitch(isA(Req.class), isA(Long.class))).thenReturn(resp);
         } catch (RetryableException e) {
             e.printStackTrace();
         }
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -96,7 +96,6 @@ class SwitchCtrlTests {
                 .andExpect(jsonPath("$['devices'][3]['id']").isNotEmpty())
                 .andExpect(jsonPath("$['devices'][3]['id']").isNumber())
                 .andExpect(jsonPath("$['devices'][3]['id']").value(7));
-
     }
 
     @Test
