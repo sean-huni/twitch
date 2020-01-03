@@ -45,14 +45,6 @@ public class Device {
     @JoinColumn(name = "device_id")
     private Collection<Log> logs = new ArrayList<>();
 
-    public Device(Long id, String location, LocalDateTime localDateTime, String type, String channel) {
-        this.id = id;
-        this.location = location;
-        this.localDateTime = localDateTime;
-        this.type = type;
-        this.channel = channel;
-    }
-
     public Device(String location, Boolean onn, LocalDateTime localDateTime, String type, String channel) {
         this.location = location;
         this.onn = onn;
