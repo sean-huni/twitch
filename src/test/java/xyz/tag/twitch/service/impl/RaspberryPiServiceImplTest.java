@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.service.RaspberryPiService;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,11 +33,11 @@ class RaspberryPiServiceImplTest {
     final Req req = new Req(ESwitch.ONN);
 
     @MockBean
-    private RaspberryPiService raspberryPiService;
+    private ElectroDeviceFeignService raspberryPiService;
 
     @BeforeEach
     void setup() {
-        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenThrow(RetryableException.class);
+        when(raspberryPiService.invokeSwitch(1L, req)).thenThrow(RetryableException.class);
 
         MockitoAnnotations.initMocks(this);
     }
@@ -45,10 +45,10 @@ class RaspberryPiServiceImplTest {
     @Test
     void givenDevice_whenInvokeDeviceSwitch_thenThrowException() {
         Assertions.assertThrows(RetryableException.class, () -> {
-            raspberryPiService.invokeDeviceSwitch(req, 1L);
+            raspberryPiService.invokeSwitch(1L, req);
         });
 
-        verify(raspberryPiService, times(1)).invokeDeviceSwitch(req, 1L);
+        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
         verifyNoMoreInteractions(raspberryPiService);
     }
 }

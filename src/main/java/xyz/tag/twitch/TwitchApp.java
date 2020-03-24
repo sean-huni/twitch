@@ -2,6 +2,7 @@ package xyz.tag.twitch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import xyz.tag.twitch.entity.Device;
 import xyz.tag.twitch.entity.Log;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
  * CELL      : +27-64-906-8809
  */
 @SpringBootApplication
+@EnableFeignClients
 @EnableScheduling
 public class TwitchApp {
     private DeviceRepo deviceRepo;
@@ -39,13 +41,13 @@ public class TwitchApp {
     @PostConstruct
     private void startUpData() {
         Iterable<Device> devices = new ArrayList<>();
-        Device ultraVioletDevice = new Device("Bedroom", false, LocalDateTime.now().minusMinutes(120), "ULTRA-VIOLET-BULB", "01");
+        Device ultraVioletDevice = new Device("Pool", false, LocalDateTime.now().minusMinutes(120), "Flood-Light", "01");
         final Log ultraVioletLog = new Log(ESwitch.valueOf("OFF"), EStatus.valueOf("UNREACHABLE"), ZonedDateTime.now().minusMinutes(10), ZonedDateTime.now());
 
-        Device redDevice = new Device("Bathroom", false, LocalDateTime.now(), "RED-LED", "02");
+        Device redDevice = new Device("Backyard", false, LocalDateTime.now(), "Flood-Light", "02");
         final Log redLog = new Log(ESwitch.valueOf("OFF"), EStatus.valueOf("UNREACHABLE"), ZonedDateTime.now().minusMinutes(20), ZonedDateTime.now());
 
-        Device greenDevice = new Device("Bathroom", false, LocalDateTime.now(), "GREEN-LED", "03");
+        Device greenDevice = new Device("Frontyard", false, LocalDateTime.now(), "Flood-Light", "03");
         final Log greenLog = new Log(ESwitch.valueOf("OFF"), EStatus.valueOf("UNREACHABLE"), ZonedDateTime.now(), ZonedDateTime.now());
 
         Device blueDevice = new Device("Bathroom", false, LocalDateTime.now(), "BLUE-LED", "04");

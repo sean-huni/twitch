@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.8.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.3.0.M3'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id "org.sonarqube" version "2.7"
 }
@@ -9,21 +9,27 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
 group = 'xyz.tag'
-version = '1'
+version = '2'
 sourceCompatibility = '11'
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-    set('springBootAdminVersion', "2.1.5")
+	set('springBootAdminVersion', "2.2.1")
+	set('springCloudVersion', "Hoxton.SR3")
 }
 
 
@@ -78,36 +84,26 @@ test {
     finalizedBy codeCoverageReport
 }
 
-/*
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
-    testCompileOnly("org.projectlombok:lombok:${lombokVersion}")
-    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
-    testAnnotationProcessor("org.projectlombok:lombok:${lombokVersion}")
- */
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'de.codecentric:spring-boot-admin-starter-client'
     implementation 'de.codecentric:spring-boot-admin-starter-server'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'io.github.openfeign:feign-core:10.2.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.netflix.feign:feign-gson:8.18.0'
     implementation 'com.netflix.feign:feign-slf4j:8.18.0'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
 
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
     compile "io.springfox:springfox-bean-validators:2.9.2"
 
-    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
-//    runtimeOnly 'mysql:mysql-connector-java'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.4.0'
 
-
     testImplementation 'com.h2database:h2'
-//    testImplementation 'org.junit.platform:junit-platform-engine'
-//    testImplementation 'org.junit.platform:junit-platform-runner'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
@@ -121,10 +117,18 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testCompile 'org.projectlombok:lombok'
     testImplementation 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
 }
 
 dependencyManagement {
-    imports {
-        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
-    }
+	imports {
+		mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
 }

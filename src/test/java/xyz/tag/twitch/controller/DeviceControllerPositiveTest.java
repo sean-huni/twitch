@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.service.RaspberryPiService;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.isA;
@@ -52,13 +53,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DeviceControllerPositiveTest {
 
     private final Req req = new Req(ESwitch.ONN);
-    private final Resp resp = new Resp(200, "Successful");
+    private final Resp resp = new Resp(HttpStatus.OK.value(), "Successful");
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private RaspberryPiService raspberryPiService;
+    private ElectroDeviceFeignService raspberryPiService;
 
     @BeforeAll
     static void setUp() {
@@ -75,7 +76,7 @@ class DeviceControllerPositiveTest {
         MockitoAnnotations.initMocks(this);
 //        this.mockMvc = MockMvcBuilders.standaloneSetup(deviceService).build();
         try {
-            lenient().when(raspberryPiService.invokeDeviceSwitch(isA(Req.class), isA(Long.class))).thenReturn(resp);
+            lenient().when(raspberryPiService.invokeSwitch(isA(Long.class), isA(Req.class))).thenReturn(resp);
         } catch (RetryableException e) {
             e.printStackTrace();
         }
@@ -125,7 +126,7 @@ class DeviceControllerPositiveTest {
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        verify(raspberryPiService, times(1)).invokeDeviceSwitch(req, 1L);
+        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
         verifyZeroInteractions(raspberryPiService);
 
         log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());

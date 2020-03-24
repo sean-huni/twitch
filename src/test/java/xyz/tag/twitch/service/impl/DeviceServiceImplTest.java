@@ -18,8 +18,8 @@ import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 import xyz.tag.twitch.service.DeviceService;
-import xyz.tag.twitch.service.RaspberryPiService;
 
 import java.util.Collection;
 
@@ -54,19 +54,19 @@ class DeviceServiceImplTest {
     private DeviceService deviceService;
 
     @MockBean
-    private RaspberryPiService raspberryPiService;
+    private ElectroDeviceFeignService raspberryPiService;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
         final Resp resp = new Resp(HttpStatus.OK.value(), "Successful");
-        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenReturn(resp);
+        when(raspberryPiService.invokeSwitch(1L, req)).thenReturn(resp);
     }
 
     @Test
     void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenVerifyInvocation() throws DeviceNotFound {
         deviceService.toggleSwitch(1L, ESwitch.ONN);
-        verify(raspberryPiService, times(1)).invokeDeviceSwitch(req, 1L);
+        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
     }
 
     @Test
@@ -76,7 +76,7 @@ class DeviceServiceImplTest {
 
         Exception exception = assertThrows(DeviceNotFound.class, () -> deviceServiceLocal.toggleSwitch(1L, ESwitch.ONN));
 
-        verify(raspberryPiService, times(0)).invokeDeviceSwitch(req, 1L);
+        verify(raspberryPiService, times(0)).invokeSwitch(1L, req);
         assertEquals("404 Device not Found Test.", exception.getMessage());
     }
 
