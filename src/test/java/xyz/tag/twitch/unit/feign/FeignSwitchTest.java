@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.feign.ElectroDev;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -36,21 +36,20 @@ import static org.mockito.Mockito.when;
 public class FeignSwitchTest {
     private static final String REST_ELECTRO_DEV_TEST_ENDPOINT = "http://192.168.0.146:8083/api/v1";
     @Mock
-    private ElectroDev electroDev;
+    private ElectroDeviceFeignService electroDeviceFeignService;
     private MockClient mockClient;
 
     @BeforeEach
     public void pretest() {
         mockClient = new MockClient().noContent(HttpMethod.PUT, "/device/{id}");
 
-        electroDev = Feign.builder()
+        electroDeviceFeignService = Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new GsonDecoder())
                 .logger(new Slf4jLogger())
                 .logLevel(feign.Logger.Level.FULL)
                 .client(mockClient)
-//                .target(new MockTarget<>(ElectroDev.class));
-                .target(ElectroDev.class, REST_ELECTRO_DEV_TEST_ENDPOINT);
+                .target(ElectroDeviceFeignService.class, REST_ELECTRO_DEV_TEST_ENDPOINT);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -62,16 +61,16 @@ public class FeignSwitchTest {
     @Test
     public void givenDeviceID1_whenTogglingSwitchOnn_thenSucceedResp() {
 //        mockClient.add(HttpMethod.PUT, "/device/1?switch=ONN", HttpsURLConnection.HTTP_ACCEPTED);
-        when(electroDev.invokeSwitch(1L, new Req(ESwitch.ONN))).thenReturn(new Resp(200, "Successful"));
-        final Resp resp2 = electroDev.invokeSwitch(1L, new Req(ESwitch.ONN));
+        when(electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.ONN))).thenReturn(new Resp(200, "Successful"));
+        final Resp resp2 = electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.ONN));
         assertEquals(200, (int) resp2.getCode());
     }
 
     @Test
     public void givenDeviceID1_whenTogglingSwitchOff_thenSucceedResp() {
 //        mockClient.add(HttpMethod.PUT, "/device/1?switch=OFF", HttpsURLConnection.HTTP_ACCEPTED);
-        when(electroDev.invokeSwitch(1L, new Req(ESwitch.OFF))).thenReturn(new Resp(200, "Successful"));
-        final Resp resp1 = electroDev.invokeSwitch(1L, new Req(ESwitch.OFF));
+        when(electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.OFF))).thenReturn(new Resp(200, "Successful"));
+        final Resp resp1 = electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.OFF));
         assertEquals(200, (int) resp1.getCode());
     }
 }

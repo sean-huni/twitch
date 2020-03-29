@@ -25,20 +25,21 @@ import java.time.format.DateTimeFormatter;
  */
 public class CustomGsonDecoder extends GsonDecoder {
 
-    public CustomGsonDecoder() {
-        super(new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
-                    @Override
-                    public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-                        return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), dtf);
-                    }
-                }).registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
-                    @Override
-                    public JsonElement serialize(LocalDateTime localDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
-                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-                        return new JsonPrimitive(dtf.format(localDateTime));
-                    }
-                }).create());
-    }
+//  Found @ >>  https://stackoverflow.com/questions/49732135/deserializing-localdatetime-with-feign
+public CustomGsonDecoder() {
+    super(new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+                @Override
+                public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                    return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), dtf);
+                }
+            }).registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                @Override
+                public JsonElement serialize(LocalDateTime localDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+                    return new JsonPrimitive(dtf.format(localDateTime));
+                }
+            }).create());
+}
 }

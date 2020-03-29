@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
@@ -18,10 +19,10 @@ import xyz.tag.twitch.entity.RespHealthCheckDO;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 import xyz.tag.twitch.repo.DeviceRepo;
 import xyz.tag.twitch.repo.RespHealthCheckRepo;
 import xyz.tag.twitch.service.DeviceService;
-import xyz.tag.twitch.service.RaspberryPiService;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import static java.util.Comparator.comparing;
 @Service
 public class DeviceServiceImpl implements DeviceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceServiceImpl.class);
-    private RaspberryPiService raspberryPiService;
+    private ElectroDeviceFeignService electroDeviceFeignService;
     private DeviceRepo deviceRepo;
     private Converter<Device, DeviceDTO> toDeviceDTO;
     private Converter<Log, LogDTO> toLogDTO;
@@ -67,8 +68,8 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Autowired
-    public void setRaspberryPiService(RaspberryPiService raspberryPiService) {
-        this.raspberryPiService = raspberryPiService;
+    public void setElectroDeviceFeignService(ElectroDeviceFeignService electroDeviceFeignService) {
+        this.electroDeviceFeignService = electroDeviceFeignService;
     }
 
     @Autowired
@@ -105,8 +106,8 @@ public class DeviceServiceImpl implements DeviceService {
 
             LOGGER.info("Extracted Device-Channel: {}", channel);
 
-            resp = raspberryPiService.invokeDeviceSwitch(req, channel);
-            if (resp.getCode() >= 200) {
+            resp = electroDeviceFeignService.invokeSwitch(channel, req);
+            if (HttpStatus.OK.equals(resp.getCode())) {
                 log.setEStatus(EStatus.valueOf("ONLINE"));
             } else {
                 log.setEStatus(EStatus.valueOf("OFFLINE"));
