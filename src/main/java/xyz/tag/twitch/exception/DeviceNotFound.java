@@ -9,7 +9,7 @@ package xyz.tag.twitch.exception;
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
-public class DeviceNotFound extends Exception{
+public class DeviceNotFound extends Exception {
     /**
      * Constructs a new exception with the specified detail message.  The
      * cause is not initialized, and may subsequently be initialized by

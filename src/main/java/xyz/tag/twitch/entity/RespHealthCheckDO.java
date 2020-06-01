@@ -1,8 +1,10 @@
 package xyz.tag.twitch.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import xyz.tag.twitch.enums.DeviceType;
 import xyz.tag.twitch.enums.EStatus;
 
@@ -20,9 +22,11 @@ import java.time.LocalDateTime;
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@ToString
 @Entity
 public class RespHealthCheckDO {
 

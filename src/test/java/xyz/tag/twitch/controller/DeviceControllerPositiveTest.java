@@ -1,4 +1,4 @@
-package xyz.tag.twitch.integration.controller;
+package xyz.tag.twitch.controller;
 
 
 import feign.RetryableException;
@@ -14,17 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.service.RaspberryPiService;
+import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,16 +50,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc //need this in Spring Boot test
 @Slf4j
-class SwitchCtrlTests {
+class DeviceControllerPositiveTest {
 
     private final Req req = new Req(ESwitch.ONN);
-    private final Resp resp = new Resp(200, "Successful");
+    private final Resp resp = new Resp(HttpStatus.OK.value(), "Successful");
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private RaspberryPiService raspberryPiService;
+    private ElectroDeviceFeignService raspberryPiService;
 
     @BeforeAll
     static void setUp() {
@@ -69,13 +73,13 @@ class SwitchCtrlTests {
 
     @BeforeEach
     void beforeEachTest() {
+        MockitoAnnotations.initMocks(this);
 //        this.mockMvc = MockMvcBuilders.standaloneSetup(deviceService).build();
         try {
-            lenient().when(raspberryPiService.invokeDeviceSwitch(isA(Req.class), isA(Long.class))).thenReturn(resp);
+            lenient().when(raspberryPiService.invokeSwitch(isA(Long.class), isA(Req.class))).thenReturn(resp);
         } catch (RetryableException e) {
             e.printStackTrace();
         }
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -93,7 +97,6 @@ class SwitchCtrlTests {
                 .andExpect(jsonPath("$['devices'][3]['id']").isNotEmpty())
                 .andExpect(jsonPath("$['devices'][3]['id']").isNumber())
                 .andExpect(jsonPath("$['devices'][3]['id']").value(7));
-
     }
 
     @Test
@@ -109,9 +112,6 @@ class SwitchCtrlTests {
                 .andExpect(jsonPath("$['logs'][0]['eswitch']").value(ESwitch.OFF.getStatus()))
                 .andExpect(jsonPath("$['logs'][0]['estatus']").value(EStatus.UNREACHABLE.getStatus()))
                 .andReturn();
-//                .andExpect(jsonPath("$['devices'][0]['id']").isNotEmpty())
-//                .andExpect(jsonPath("$['devices'][0]['id']").isNumber())
-//                .andExpect(jsonPath("$['devices'][0]['id']").value(1));
 
         log.debug("Device ID-01 Logs: {}", mvcResult.getResponse().getContentAsString());
     }
@@ -119,19 +119,17 @@ class SwitchCtrlTests {
     @Test
     void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
-//        doNothing().when(deviceService).toggleSwitch(isA(Long.class), isA(ESwitch.class));
-//        when(raspberryPiService.invokeDeviceSwitch(req, 1L)).thenReturn(resp);
-        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01?switch=ONN")
+        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01")
+                .content("{\"status\": \"ONN\"}")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        verify(raspberryPiService, times(1)).invokeDeviceSwitch(req, 1L);
+        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
         verifyZeroInteractions(raspberryPiService);
 
         log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());
-//                .andExpect(jsonPath())
     }
 
     @Test

@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import xyz.tag.twitch.dto.electrodev.RespHC;
 import xyz.tag.twitch.enums.DeviceType;
 import xyz.tag.twitch.enums.EStatus;
-import xyz.tag.twitch.feign.DeviceHealthCheck;
+import xyz.tag.twitch.feign.DeviceHealthCheckFeignService;
 import xyz.tag.twitch.util.CustomGsonDecoder;
 
 import java.time.LocalDateTime;
@@ -40,21 +40,20 @@ public class FeignHostPingTest {
     private static final String REST_DEV_HEALTH_TEST_ENDPOINT = "http://192.168.0.146:8083/api/v1";
 
     @Mock
-    private DeviceHealthCheck deviceHealthCheck;
+    private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
     private MockClient mockClient;
 
     @BeforeEach
     public void pretest() {
         mockClient = new MockClient().noContent(HttpMethod.PUT, "/device/{id}");
 
-        deviceHealthCheck = Feign.builder()
+        deviceHealthCheckFeignService = Feign.builder()
                 .encoder(new GsonEncoder())
                 .decoder(new CustomGsonDecoder())
                 .logger(new Slf4jLogger())
                 .logLevel(feign.Logger.Level.FULL)
                 .client(mockClient)
-//                .target(new MockTarget<>(DeviceHealthCheck.class));
-                .target(DeviceHealthCheck.class, REST_DEV_HEALTH_TEST_ENDPOINT);
+                .target(DeviceHealthCheckFeignService.class, REST_DEV_HEALTH_TEST_ENDPOINT);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -65,9 +64,9 @@ public class FeignHostPingTest {
 
     @Test
     public void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
-        when(deviceHealthCheck.pingHostDevice())
+        when(deviceHealthCheckFeignService.pingHostDevice())
                 .thenReturn(new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.ONLINE, LocalDateTime.now()));
-        final RespHC hostResp = deviceHealthCheck.pingHostDevice();
+        final RespHC hostResp = deviceHealthCheckFeignService.pingHostDevice();
 
         log.info("Host-Response: {}", hostResp);
 
@@ -79,9 +78,9 @@ public class FeignHostPingTest {
 
     @Test
     public void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
-        when(deviceHealthCheck.pingChannel(1L))
+        when(deviceHealthCheckFeignService.pingChannel(1L))
                 .thenReturn(new RespHC("RPi-1", DeviceType.RELAY_CHANNEL, EStatus.ONLINE, LocalDateTime.now()));
-        final RespHC hostResp = deviceHealthCheck.pingChannel(1L);
+        final RespHC hostResp = deviceHealthCheckFeignService.pingChannel(1L);
 
         log.info("Host-Response: {}", hostResp);
 

@@ -1,12 +1,20 @@
 package xyz.tag.twitch.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
 import xyz.tag.twitch.dto.RollingLogDTO;
+import xyz.tag.twitch.dto.req.enums.ESwitchDTO;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.exception.DeviceNotFound;
 import xyz.tag.twitch.service.DeviceService;
@@ -21,17 +29,19 @@ import java.util.Map;
  * USER      : sean
  * DATE      : 03-Sun-Mar-2019
  * TIME      : 12:10
- * E-MAIL    : kudzai@bcs.org
- * CELL      : +27-64-906-8809
+ * E-MAIL    : sean2kay@gmail.com
+ * CELL      : +27-81-814-3302
  */
 @Slf4j
 @RestController
 @RequestMapping("api/v1/devices")
 public class DeviceController {
-    private DeviceService deviceService;
+    private final DeviceService deviceService;
+    private final Converter toSwitchDO;
 
-    public DeviceController(DeviceService deviceService) {
+    public DeviceController(DeviceService deviceService, @Qualifier("toSwitchDO") Converter toSwitchDO) {
         this.deviceService = deviceService;
+        this.toSwitchDO = toSwitchDO;
     }
 
     @GetMapping
@@ -56,11 +66,10 @@ public class DeviceController {
     }
 
     @PutMapping("{id}")
-    public void toggleSwitch(@PathVariable("id") Long id, @RequestParam("switch") ESwitch option) {
-//       final EnumSwitch option = !sw.isEmpty() && sw.equals("0") ? EnumSwitch.OFF : EnumSwitch.ONN;
+    public void toggleSwitch(@PathVariable("id") Long id, @RequestBody ESwitchDTO option) {
         log.info("Incoming PUT-Req: device-id: {}, switch: {}", id, option);
         try {
-            deviceService.toggleSwitch(id, option);
+            deviceService.toggleSwitch(id, (ESwitch) toSwitchDO.convert(option));
         } catch (DeviceNotFound dnf) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, dnf.getMessage());
         }

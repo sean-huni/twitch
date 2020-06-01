@@ -1,8 +1,18 @@
 package xyz.tag.twitch.entity;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,14 +44,6 @@ public class Device {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "device_id")
     private Collection<Log> logs = new ArrayList<>();
-
-    public Device(Long id, String location, LocalDateTime localDateTime, String type, String channel) {
-        this.id = id;
-        this.location = location;
-        this.localDateTime = localDateTime;
-        this.type = type;
-        this.channel = channel;
-    }
 
     public Device(String location, Boolean onn, LocalDateTime localDateTime, String type, String channel) {
         this.location = location;
