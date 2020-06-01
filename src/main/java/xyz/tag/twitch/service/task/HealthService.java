@@ -4,6 +4,8 @@ import feign.RetryableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import xyz.tag.twitch.dto.electrodev.RespHC;
@@ -26,11 +28,12 @@ import java.time.LocalDateTime;
  */
 @Service
 @Configuration
+@EnableAsync
 @Slf4j
 public class HealthService {
     private final RespHealthCheckRepo respHealthCheckRepo;
-    private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
-    private Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter;
+    private final DeviceHealthCheckFeignService deviceHealthCheckFeignService;
+    private final Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter;
 
     public HealthService(RespHealthCheckRepo respHealthCheckRepo, Converter<RespHC, RespHealthCheckDO> respHCRespHealthCheckDOConverter, DeviceHealthCheckFeignService deviceHealthCheckFeignService) {
         this.respHealthCheckRepo = respHealthCheckRepo;
@@ -38,6 +41,7 @@ public class HealthService {
         this.deviceHealthCheckFeignService = deviceHealthCheckFeignService;
     }
 
+    @Async
     @Scheduled(cron = "${purge.cron.expression}")
     public void ping3rdPartyDevices() {
 

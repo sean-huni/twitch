@@ -32,8 +32,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Comparator.comparing;
-
 /**
  * PROJECT   : twitch
  * PACKAGE   : xyz.tag.twitch.service.impl
@@ -47,7 +45,7 @@ import static java.util.Comparator.comparing;
 public class DeviceServiceImpl implements DeviceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceServiceImpl.class);
     private ElectroDeviceFeignService electroDeviceFeignService;
-    private DeviceRepo deviceRepo;
+    private final DeviceRepo deviceRepo;
     private Converter<Device, DeviceDTO> toDeviceDTO;
     private Converter<Log, LogDTO> toLogDTO;
     private Converter<LogsMapper, Collection<RollingLogDTO>> toRollingLogsDTO;
@@ -132,7 +130,7 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public Collection<LogDTO> findDeviceLogs(Long id) {
         final Device newDevice = deviceRepo.findById(id).orElse(null);
-        return newDevice != null ? newDevice.getLogs().stream().map(toLogDTO::convert).collect(Collectors.toList()) : null;
+        return newDevice != null ? newDevice.getLogs().parallelStream().map(toLogDTO::convert).collect(Collectors.toList()) : null;
     }
 
     @Override
@@ -147,7 +145,6 @@ public class DeviceServiceImpl implements DeviceService {
             rLog.setItem(itemName);
         });
 
-        rollingLogs.sort(comparing(RollingLogDTO::getDateTime));
         return rollingLogs;
     }
 }

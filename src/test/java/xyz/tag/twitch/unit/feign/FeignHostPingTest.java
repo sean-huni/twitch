@@ -53,7 +53,6 @@ public class FeignHostPingTest {
                 .logger(new Slf4jLogger())
                 .logLevel(feign.Logger.Level.FULL)
                 .client(mockClient)
-//                .target(new MockTarget<>(DeviceHealthCheck.class));
                 .target(DeviceHealthCheckFeignService.class, REST_DEV_HEALTH_TEST_ENDPOINT);
         MockitoAnnotations.initMocks(this);
     }

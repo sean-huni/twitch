@@ -29,15 +29,15 @@ import java.util.Map;
  * USER      : sean
  * DATE      : 03-Sun-Mar-2019
  * TIME      : 12:10
- * E-MAIL    : kudzai@bcs.org
- * CELL      : +27-64-906-8809
+ * E-MAIL    : sean2kay@gmail.com
+ * CELL      : +27-81-814-3302
  */
 @Slf4j
 @RestController
 @RequestMapping("api/v1/devices")
 public class DeviceController {
-    private DeviceService deviceService;
-    private Converter toSwitchDO;
+    private final DeviceService deviceService;
+    private final Converter toSwitchDO;
 
     public DeviceController(DeviceService deviceService, @Qualifier("toSwitchDO") Converter toSwitchDO) {
         this.deviceService = deviceService;

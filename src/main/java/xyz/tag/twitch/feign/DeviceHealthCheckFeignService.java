@@ -24,13 +24,13 @@ import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 @FeignClient(value = "DEVICE-HEALTH-CHECK", url = REST_ELECTRO_DEV_ENDPOINT, configuration = FeignConfig.class)
 public interface DeviceHealthCheckFeignService {
 
-    @GetMapping(value = "/host", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/host", consumes = MediaType.APPLICATION_JSON_VALUE)
     RespHC pingHostDevice();
 
-    @GetMapping(value = "/channels/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/channels/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     RespHC pingChannel(@PathVariable("id") final Long id);
 
-    @GetMapping(value = "/channels", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/channels", consumes = MediaType.APPLICATION_JSON_VALUE)
     Collection<RespHC> pingAllChannels();
 
 }

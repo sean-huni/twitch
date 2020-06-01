@@ -1,10 +1,11 @@
 spring:
   #  profiles:
   #    active: live
+
   datasource:
     url: jdbc:mariadb://localhost:3306/twitch?createDatabaseIfNotExist=true
-    username: root
-    password: password
+    username:
+    password:
     driver-class-name: org.mariadb.jdbc.Driver
     name: twitch
   jpa:
@@ -19,6 +20,13 @@ spring:
 server:
   port: 8080
 
+
 purge:
   cron:
-    expression: '*/10 * * * * *'
+    expression: '* */10 * * * *'
+feign:
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true

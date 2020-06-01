@@ -24,6 +24,6 @@ import static xyz.tag.twitch.constant.Constants.REST_ELECTRO_DEV_ENDPOINT;
 @FeignClient(value = "ELECTRONIC-DEVICE", url = REST_ELECTRO_DEV_ENDPOINT, configuration = FeignConfig.class)
 public interface ElectroDeviceFeignService {
 
-    @PutMapping(value = "/devices/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/devices/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     Resp invokeSwitch(@PathVariable("id") final Long id, @RequestBody final Req req);
 }
