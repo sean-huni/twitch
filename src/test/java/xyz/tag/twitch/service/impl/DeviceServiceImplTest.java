@@ -3,7 +3,6 @@ package xyz.tag.twitch.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -50,6 +49,7 @@ import static org.mockito.Mockito.when;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class DeviceServiceImplTest {
     private final Req req = new Req(ESwitch.ONN);
+
     @Autowired
     private DeviceService deviceService;
 
@@ -58,15 +58,14 @@ class DeviceServiceImplTest {
 
     @BeforeEach
     void setup() {
-        MockitoAnnotations.initMocks(this);
-        final Resp resp = new Resp(HttpStatus.OK.value(), "Successful");
+        Resp resp = new Resp(HttpStatus.OK.value(), "Successful");
         when(raspberryPiService.invokeSwitch(1L, req)).thenReturn(resp);
     }
 
     @Test
     void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenVerifyInvocation() throws DeviceNotFound {
-        deviceService.toggleSwitch(1L, ESwitch.ONN);
-        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
+        deviceService.toggleSwitch(3L, ESwitch.ONN);
+        verify(raspberryPiService, times(1)).invokeSwitch(2L, req);
     }
 
     @Test

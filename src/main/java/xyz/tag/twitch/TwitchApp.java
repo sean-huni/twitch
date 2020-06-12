@@ -41,7 +41,7 @@ public class TwitchApp {
     @PostConstruct
     private void startUpData() {
         Iterable<Device> devices = new ArrayList<>();
-        Device allFloodLights = new Device("All Flood Lights", false, LocalDateTime.now().minusMinutes(100), "Flood-Light-1", "101");
+        Device allFloodLights = new Device("All Flood Lights", false, LocalDateTime.now().minusMinutes(100), "All Flood Lights", "101");
         final Log allFloodLightsLog = new Log(ESwitch.valueOf("OFF"), EStatus.valueOf("UNREACHABLE"), ZonedDateTime.now().minusMinutes(5), ZonedDateTime.now());
 
         Device ultraVioletDevice = new Device("Swimming Pool", false, LocalDateTime.now().minusMinutes(120), "Flood-Light-1", "01");
@@ -66,6 +66,9 @@ public class TwitchApp {
         ((ArrayList<Device>) devices).add(redDevice);
         ((ArrayList<Device>) devices).add(greenDevice);
         ((ArrayList<Device>) devices).add(blueDevice);
-        deviceRepo.saveAll(devices);
+//        deviceRepo.saveAll();
+        for (Device device : devices) {
+            deviceRepo.save(device);
+        }
     }
 }

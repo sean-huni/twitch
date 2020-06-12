@@ -5,10 +5,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.feign.ElectroDeviceFeignService;
@@ -32,14 +31,12 @@ import static org.mockito.Mockito.when;
 class RaspberryPiServiceImplTest {
     final Req req = new Req(ESwitch.ONN);
 
-    @MockBean
+    @Mock
     private ElectroDeviceFeignService raspberryPiService;
 
     @BeforeEach
     void setup() {
         when(raspberryPiService.invokeSwitch(1L, req)).thenThrow(RetryableException.class);
-
-        MockitoAnnotations.initMocks(this);
     }
 
     @Test
