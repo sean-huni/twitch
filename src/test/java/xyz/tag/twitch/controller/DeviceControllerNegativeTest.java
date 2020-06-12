@@ -1,6 +1,6 @@
 package xyz.tag.twitch.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc //need this in Spring Boot test
-@Slf4j
+@Log4j2
 class DeviceControllerNegativeTest {
 
     @Autowired
@@ -46,7 +46,7 @@ class DeviceControllerNegativeTest {
     private DeviceService deviceService;
 
     @Test
-    void cGivenDeviceById_whenHttpPutOnDevice_thenReturn404() throws Exception {
+    void givenDeviceById_whenHttpPutOnDevice_thenReturn404() throws Exception {
         assertNotNull(mockMvc);
         doThrow(new DeviceNotFound("404 Device not Found Test.")).when(deviceService).toggleSwitch(anyLong(), any());
         final MvcResult resp = mockMvc.perform(put("/api/v1/devices/00")

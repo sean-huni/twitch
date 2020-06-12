@@ -11,6 +11,7 @@ package xyz.tag.twitch.constant;
  */
 public class Constants {
     public static final String REST_ELECTRO_DEV_ENDPOINT = "http://192.168.0.3:8083/api/v1";
+    public static final String SCHEMA_NAME = "twitch";
 
     private Constants() throws IllegalAccessException {
         throw new IllegalAccessException("Instantiation Not Permitted...");

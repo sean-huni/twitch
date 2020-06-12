@@ -1,18 +1,11 @@
 package xyz.tag.twitch.unit.feign;
 
-import feign.Feign;
-import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
-import feign.mock.HttpMethod;
-import feign.mock.MockClient;
-import feign.slf4j.Slf4jLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
@@ -20,6 +13,10 @@ import xyz.tag.twitch.enums.ESwitch;
 import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,28 +31,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 public class FeignSwitchTest {
-    private static final String REST_ELECTRO_DEV_TEST_ENDPOINT = "http://192.168.0.146:8083/api/v1";
     @Mock
     private ElectroDeviceFeignService electroDeviceFeignService;
-    private MockClient mockClient;
 
     @BeforeEach
     public void pretest() {
-        mockClient = new MockClient().noContent(HttpMethod.PUT, "/device/{id}");
-
-        electroDeviceFeignService = Feign.builder()
-                .encoder(new GsonEncoder())
-                .decoder(new GsonDecoder())
-                .logger(new Slf4jLogger())
-                .logLevel(feign.Logger.Level.FULL)
-                .client(mockClient)
-                .target(ElectroDeviceFeignService.class, REST_ELECTRO_DEV_TEST_ENDPOINT);
-        MockitoAnnotations.initMocks(this);
+        electroDeviceFeignService = mock(ElectroDeviceFeignService.class);
     }
 
     @AfterEach
     public void tearDown() {
-        mockClient.verifyStatus();
+        verify(electroDeviceFeignService, times(1)).invokeSwitch(any(), any());
     }
 
     @Test

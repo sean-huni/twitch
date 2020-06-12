@@ -2,7 +2,7 @@ package xyz.tag.twitch.controller;
 
 
 import feign.RetryableException;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import xyz.tag.twitch.dto.electrodev.Req;
@@ -49,7 +50,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc //need this in Spring Boot test
-@Slf4j
+@Log4j2
+@DirtiesContext
 class DeviceControllerPositiveTest {
 
     private final Req req = new Req(ESwitch.ONN);
@@ -96,7 +98,7 @@ class DeviceControllerPositiveTest {
 
                 .andExpect(jsonPath("$['devices'][3]['id']").isNotEmpty())
                 .andExpect(jsonPath("$['devices'][3]['id']").isNumber())
-                .andExpect(jsonPath("$['devices'][3]['id']").value(7));
+                .andExpect(jsonPath("$['devices'][3]['id']").value(4));
     }
 
     @Test
@@ -108,7 +110,7 @@ class DeviceControllerPositiveTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$['logs'][0]['id']").isNotEmpty())
                 .andExpect(jsonPath("$['logs'][0]['id']").isNumber())
-                .andExpect(jsonPath("$['logs'][0]['id']").value(2))
+                .andExpect(jsonPath("$['logs'][0]['id']").value(1))
                 .andExpect(jsonPath("$['logs'][0]['eswitch']").value(ESwitch.OFF.getStatus()))
                 .andExpect(jsonPath("$['logs'][0]['estatus']").value(EStatus.UNREACHABLE.getStatus()))
                 .andReturn();
@@ -117,16 +119,16 @@ class DeviceControllerPositiveTest {
     }
 
     @Test
-    void cGivenDeviceById_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
+    void givenDeviceById1_whenHttpPutOnDevice_thenToggleSwitchONN() throws Exception {
         assertNotNull(mockMvc);
-        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/01")
+        final MvcResult resp = mockMvc.perform(put("/api/v1/devices/3")
                 .content("{\"status\": \"ONN\"}")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-        verify(raspberryPiService, times(1)).invokeSwitch(1L, req);
+        verify(raspberryPiService, times(1)).invokeSwitch(2L, req);
         verifyZeroInteractions(raspberryPiService);
 
         log.debug("Toggle-Switch Resp: {}", resp.getResponse().getContentAsString());

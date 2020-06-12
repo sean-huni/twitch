@@ -8,8 +8,13 @@ import xyz.tag.twitch.enums.ESwitch;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.ZonedDateTime;
+
+import static xyz.tag.twitch.constant.Constants.SCHEMA_NAME;
 
 /**
  * PROJECT   : twitch
@@ -24,10 +29,13 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Data
 @Entity
+@Table(name = "log", schema = SCHEMA_NAME)
 public class Log {
+    private static final String HIBERNATE_SEQ_LOG = "log_seq";
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = HIBERNATE_SEQ_LOG, sequenceName = SCHEMA_NAME + "." + HIBERNATE_SEQ_LOG)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = HIBERNATE_SEQ_LOG)
     private Long id;
     private ESwitch eSwitch;
     private EStatus eStatus;

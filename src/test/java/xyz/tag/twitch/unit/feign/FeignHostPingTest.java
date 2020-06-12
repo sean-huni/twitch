@@ -1,28 +1,22 @@
 package xyz.tag.twitch.unit.feign;
 
-import feign.Feign;
-import feign.gson.GsonEncoder;
-import feign.mock.HttpMethod;
-import feign.mock.MockClient;
-import feign.slf4j.Slf4jLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import xyz.tag.twitch.dto.electrodev.RespHC;
 import xyz.tag.twitch.enums.DeviceType;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.feign.DeviceHealthCheckFeignService;
-import xyz.tag.twitch.util.CustomGsonDecoder;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -37,30 +31,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @Slf4j
 public class FeignHostPingTest {
-    private static final String REST_DEV_HEALTH_TEST_ENDPOINT = "http://192.168.0.146:8083/api/v1";
-
     @Mock
     private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
-    private MockClient mockClient;
 
     @BeforeEach
     public void pretest() {
-        mockClient = new MockClient().noContent(HttpMethod.PUT, "/device/{id}");
-
-        deviceHealthCheckFeignService = Feign.builder()
-                .encoder(new GsonEncoder())
-                .decoder(new CustomGsonDecoder())
-                .logger(new Slf4jLogger())
-                .logLevel(feign.Logger.Level.FULL)
-                .client(mockClient)
-                .target(DeviceHealthCheckFeignService.class, REST_DEV_HEALTH_TEST_ENDPOINT);
-        MockitoAnnotations.initMocks(this);
     }
 
-    @AfterEach
-    public void tearDown() {
-        mockClient.verifyStatus();
-    }
 
     @Test
     public void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
@@ -74,6 +51,7 @@ public class FeignHostPingTest {
         assertEquals(DeviceType.HOST_DEVICE.getDeviceStatus(), hostResp.getDeviceType().getDeviceStatus());
         assertEquals("RPi-1", hostResp.getName());
         assertTrue(hostResp.getLDateTime().isAfter(LocalDateTime.now().minusSeconds(2)));
+        verify(deviceHealthCheckFeignService, times(1)).pingHostDevice();
     }
 
     @Test
@@ -88,5 +66,6 @@ public class FeignHostPingTest {
         assertEquals(DeviceType.RELAY_CHANNEL.getDeviceStatus(), hostResp.getDeviceType().getDeviceStatus());
         assertEquals("RPi-1", hostResp.getName());
         assertTrue(hostResp.getLDateTime().isAfter(LocalDateTime.now().minusSeconds(2)));
+        verify(deviceHealthCheckFeignService, times(1)).pingChannel(1L);
     }
 }

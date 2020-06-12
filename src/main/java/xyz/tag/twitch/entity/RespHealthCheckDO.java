@@ -10,8 +10,13 @@ import xyz.tag.twitch.enums.EStatus;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
+
+import static xyz.tag.twitch.constant.Constants.SCHEMA_NAME;
 
 /**
  * PROJECT   : twitch
@@ -28,10 +33,13 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Entity
+@Table(name = "resp_health_check", schema = SCHEMA_NAME)
 public class RespHealthCheckDO {
+    private static final String HIBERNATE_SEQ_LOG = "health_seq";
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = HIBERNATE_SEQ_LOG, sequenceName = SCHEMA_NAME + "." + HIBERNATE_SEQ_LOG)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = HIBERNATE_SEQ_LOG)
     private Long id;
     private String name; // Device-Name
     private DeviceType deviceType; // Host-Device or Channel

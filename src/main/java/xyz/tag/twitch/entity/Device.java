@@ -10,12 +10,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static xyz.tag.twitch.constant.Constants.SCHEMA_NAME;
 
 /**
  * PROJECT   : twitch
@@ -30,10 +35,13 @@ import java.util.Collection;
 @NoArgsConstructor
 @Data
 @Entity
+@Table(name = "device", schema = SCHEMA_NAME)
 public class Device {
+    private static final String HIBERNATE_SEQ_DEVICE = "device_seq";
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = HIBERNATE_SEQ_DEVICE, sequenceName = SCHEMA_NAME + "." + HIBERNATE_SEQ_DEVICE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = HIBERNATE_SEQ_DEVICE)
     private Long id;
     @Getter(AccessLevel.NONE)
     private Boolean onn;

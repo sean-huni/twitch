@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.3.0.M3'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.3.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
     id "org.sonarqube" version "2.7"
 }
@@ -24,12 +24,13 @@ configurations {
 
 repositories {
 	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/milestone' }
+    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 ext {
-	set('springBootAdminVersion', "2.2.1")
-	set('springCloudVersion', "Hoxton.SR3")
+    set('springBootAdminVersion', "2.2.3")
+    set('springCloudVersion', "Hoxton.BUILD-SNAPSHOT")
 }
 
 
@@ -101,7 +102,7 @@ dependencies {
     compile "io.springfox:springfox-bean-validators:2.9.2"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.4.0'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.6.0'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
@@ -123,10 +124,10 @@ dependencies {
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 test {
