@@ -90,9 +90,9 @@ public class DeviceServiceImpl implements DeviceService {
     public void toggleSwitch(Long id, ESwitch option) throws DeviceNotFound {
         Optional<Device> optionalDevice = deviceRepo.findById(id);
         final Device device = optionalDevice.orElseThrow(() -> new DeviceNotFound("Device ID: " + id + " not found."));
-        final Boolean b = option.getStatus().equals("ONN");
+        final Boolean b = EStatus.ONLINE.getStatus().equals(option.getStatus());
         device.setOnn(b);
-        EStatus status = EStatus.valueOf("ONLINE");
+        EStatus status = EStatus.ONLINE;
 
         final Req req = new Req(option);
 
@@ -105,16 +105,16 @@ public class DeviceServiceImpl implements DeviceService {
             LOGGER.info("Extracted Device-Channel: {}", channel);
 
             resp = electroDeviceFeignService.invokeSwitch(channel, req);
-            if (HttpStatus.OK.equals(resp.getCode())) {
-                log.setEStatus(EStatus.valueOf("ONLINE"));
+            if (HttpStatus.OK.value() == resp.getCode()) {
+                log.setEStatus(EStatus.ONLINE);
             } else {
-                log.setEStatus(EStatus.valueOf("OFFLINE"));
+                log.setEStatus(EStatus.OFFLINE);
             }
         } catch (Exception e) {
             LOGGER.error("HTTP Exception: {}", e.getMessage(), e);
             device.setOnn(false);
-            log.setEStatus(EStatus.valueOf("UNREACHABLE"));
-            log.setESwitch(ESwitch.valueOf("OFF"));
+            log.setEStatus(EStatus.UNREACHABLE);
+            log.setESwitch(ESwitch.OFF);
         }
         log.setRespDateTime(ZonedDateTime.now());
         LOGGER.info("HTTP POST Response: {}", resp);
