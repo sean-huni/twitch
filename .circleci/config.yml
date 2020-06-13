@@ -95,15 +95,13 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: sh gradlew dependencies --refresh-dependencies
+      # run tests!
+      - run: sh gradlew test
 
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-
-      # run tests!
-      - run: sh gradlew test
 
       # Code Quality Metrics (Sonarqube) >> Code Quality Metrics (Sonarqube)
       - run: ./gradlew sonarqube
