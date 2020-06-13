@@ -46,6 +46,21 @@ jobs:
       - run: sh gradlew build
 
   test:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:11-jdk
+
+    branches:
+      only:
+        - dev
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
     steps:
       - checkout
 
@@ -67,6 +82,21 @@ jobs:
       - run: sh gradlew test --refresh-dependencies
 
   code_quality:
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:11-jdk
+
+    branches:
+      only:
+        - dev
+
+    working_directory: ~/repo
+
+    environment:
+      # Customize the JVM maximum heap limit
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
     steps:
       - checkout
 
