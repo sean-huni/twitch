@@ -35,12 +35,12 @@ public class FeignHostPingTest {
     private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
 
     @BeforeEach
-    public void pretest() {
+    void pretest() {
     }
 
 
     @Test
-    public void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
+    void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
         when(deviceHealthCheckFeignService.pingHostDevice())
                 .thenReturn(new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.ONLINE, LocalDateTime.now()));
         final RespHC hostResp = deviceHealthCheckFeignService.pingHostDevice();
@@ -55,7 +55,7 @@ public class FeignHostPingTest {
     }
 
     @Test
-    public void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
+    void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
         when(deviceHealthCheckFeignService.pingChannel(1L))
                 .thenReturn(new RespHC("RPi-1", DeviceType.RELAY_CHANNEL, EStatus.ONLINE, LocalDateTime.now()));
         final RespHC hostResp = deviceHealthCheckFeignService.pingChannel(1L);
