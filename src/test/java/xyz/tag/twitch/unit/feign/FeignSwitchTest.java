@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(MockitoExtension.class)
 @Log4j2
-public class FeignSwitchTest {
+class FeignSwitchTest {
     @Mock
     private ElectroDeviceFeignService electroDeviceFeignService;
 

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  */
 @ExtendWith(SpringExtension.class)
 @Log4j2
-public class FeignHostPingTest {
+class FeignHostPingTest {
     @Mock
     private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
 

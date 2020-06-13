@@ -66,9 +66,6 @@ public class TwitchApp {
         ((ArrayList<Device>) devices).add(redDevice);
         ((ArrayList<Device>) devices).add(greenDevice);
         ((ArrayList<Device>) devices).add(blueDevice);
-//        deviceRepo.saveAll();
-        for (Device device : devices) {
-            deviceRepo.save(device);
-        }
+        deviceRepo.saveAll(devices);
     }
 }
