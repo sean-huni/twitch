@@ -1,7 +1,7 @@
 package xyz.tag.twitch.service.task;
 
 import feign.RetryableException;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.scheduling.annotation.Async;
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 @Service
 @Configuration
 @EnableAsync
-@Slf4j
+@Log4j2
 public class HealthService {
     private final RespHealthCheckRepo respHealthCheckRepo;
     private final DeviceHealthCheckFeignService deviceHealthCheckFeignService;

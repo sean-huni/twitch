@@ -1,6 +1,6 @@
 package xyz.tag.twitch.unit.feign;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * CELL      : +27-64-906-8809
  */
 @ExtendWith(MockitoExtension.class)
-@Slf4j
+@Log4j2
 public class FeignSwitchTest {
     @Mock
     private ElectroDeviceFeignService electroDeviceFeignService;

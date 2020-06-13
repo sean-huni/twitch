@@ -1,6 +1,6 @@
 package xyz.tag.twitch.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ import java.util.Map;
  * E-MAIL    : sean2kay@gmail.com
  * CELL      : +27-81-814-3302
  */
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("api/v1/devices")
 public class DeviceController {
