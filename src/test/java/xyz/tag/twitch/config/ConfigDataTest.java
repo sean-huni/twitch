@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import xyz.tag.twitch.config.impl.ConfigDataImpl;
 import xyz.tag.twitch.entity.Device;
 import xyz.tag.twitch.entity.Log;
@@ -28,7 +27,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@SpringJUnitConfig
 class ConfigDataTest {
     private static final Iterable<Device> devices = new ArrayList<>();
     @Mock
@@ -40,19 +38,19 @@ class ConfigDataTest {
     @BeforeAll
     static void beforeAll() {
         Device allFloodLights = new Device("All Flood Lights", false, LocalDateTime.now().minusMinutes(100), "All Flood Lights", "101");
-        final Log allFloodLightsLog = new Log(ESwitch.valueOf("OFF"), EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(5), ZonedDateTime.now());
+        final Log allFloodLightsLog = new Log(ESwitch.OFF, EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(5), ZonedDateTime.now());
 
         Device ultraVioletDevice = new Device("Swimming Pool", false, LocalDateTime.now().minusMinutes(120), "Flood-Light-1", "01");
-        final Log ultraVioletLog = new Log(ESwitch.valueOf("OFF"), EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(10), ZonedDateTime.now());
+        final Log ultraVioletLog = new Log(ESwitch.OFF, EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(10), ZonedDateTime.now());
 
         Device redDevice = new Device("Backyard", false, LocalDateTime.now(), "Flood-Light-1", "02");
-        final Log redLog = new Log(ESwitch.valueOf("OFF"), EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(20), ZonedDateTime.now());
+        final Log redLog = new Log(ESwitch.OFF, EStatus.UNREACHABLE, ZonedDateTime.now().minusMinutes(20), ZonedDateTime.now());
 
         Device greenDevice = new Device("Backyard", false, LocalDateTime.now(), "Flood-Light-2", "03");
-        final Log greenLog = new Log(ESwitch.valueOf("OFF"), EStatus.UNREACHABLE, ZonedDateTime.now(), ZonedDateTime.now());
+        final Log greenLog = new Log(ESwitch.OFF, EStatus.UNREACHABLE, ZonedDateTime.now(), ZonedDateTime.now());
 
         Device blueDevice = new Device("Swimming Pool", false, LocalDateTime.now(), "Flood-Light-2", "04");
-        final Log blueLog = new Log(ESwitch.valueOf("OFF"), EStatus.UNREACHABLE, ZonedDateTime.now(), ZonedDateTime.now());
+        final Log blueLog = new Log(ESwitch.OFF, EStatus.UNREACHABLE, ZonedDateTime.now(), ZonedDateTime.now());
 
         allFloodLights.getLogs().add(allFloodLightsLog);
         ultraVioletDevice.getLogs().add(ultraVioletLog);
