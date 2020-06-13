@@ -3,7 +3,6 @@
 # Check https://circleci.com/docs/2.1/language-java/ for more details
 #
 version: 2.1
-
 workflows:
   main:
     jobs:
@@ -59,11 +58,43 @@ jobs:
 
   test:
     steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: sh gradlew dependencies --refresh-dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
       # run tests!
       - run: sh gradlew test --refresh-dependencies
 
   code_quality:
     steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: sh gradlew dependencies --refresh-dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
+
       # run tests!
       - run: sh gradlew test
 
