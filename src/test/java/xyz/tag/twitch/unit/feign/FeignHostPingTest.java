@@ -1,6 +1,6 @@
 package xyz.tag.twitch.unit.feign;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,18 +29,18 @@ import static org.mockito.Mockito.when;
  * CELL      : +27-64-906-8809
  */
 @ExtendWith(SpringExtension.class)
-@Slf4j
-public class FeignHostPingTest {
+@Log4j2
+class FeignHostPingTest {
     @Mock
     private DeviceHealthCheckFeignService deviceHealthCheckFeignService;
 
     @BeforeEach
-    public void pretest() {
+    void pretest() {
     }
 
 
     @Test
-    public void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
+    void givenFeignEndpoint_whenPingingHostDevice_thenReturnHostDeviceHealthInfo() {
         when(deviceHealthCheckFeignService.pingHostDevice())
                 .thenReturn(new RespHC("RPi-1", DeviceType.HOST_DEVICE, EStatus.ONLINE, LocalDateTime.now()));
         final RespHC hostResp = deviceHealthCheckFeignService.pingHostDevice();
@@ -55,7 +55,7 @@ public class FeignHostPingTest {
     }
 
     @Test
-    public void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
+    void givenFeignEndpoint_whenPingingRelayChannel_thenReturnRelayChannelHealthInfo() {
         when(deviceHealthCheckFeignService.pingChannel(1L))
                 .thenReturn(new RespHC("RPi-1", DeviceType.RELAY_CHANNEL, EStatus.ONLINE, LocalDateTime.now()));
         final RespHC hostResp = deviceHealthCheckFeignService.pingChannel(1L);

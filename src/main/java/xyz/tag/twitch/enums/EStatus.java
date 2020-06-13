@@ -1,5 +1,7 @@
 package xyz.tag.twitch.enums;
 
+import lombok.Getter;
+
 /**
  * PROJECT   : twitch
  * PACKAGE   : xyz.tag.twitch.enums
@@ -9,6 +11,7 @@ package xyz.tag.twitch.enums;
  * E-MAIL    : kudzai@bcs.org
  * CELL      : +27-64-906-8809
  */
+@Getter
 public enum EStatus {
     ONLINE("ONLINE"), //The Device is Online.
     OFFLINE("OFFLINE"), //The device in online but channel is unreachable.
@@ -21,7 +24,4 @@ public enum EStatus {
         this.status = status;
     }
 
-    public String getStatus() {
-        return status;
-    }
 }

@@ -75,3 +75,29 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+.attach_pid18652
+.attach_pid29918
+.attach_pid9431
+.idea/.gitignore
+.idea/artifacts/
+.idea/codeStyles/
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/inspectionProfiles/
+.idea/jarRepositories.xml
+.idea/markdown-doclet.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/modules/
+.idea/sonarlint/
+.idea/stylesheetLinters/
+.idea/vcs.xml
+node_modules/
+package-lock.json
+src/main/generated/
+src/main/java/xyz/tag/twitch/dto/resp/
+src/main/resources/static/
+src/test/generated_tests/
+src/test/java/xyz/tag/twitch/constant/
+src/test/java/xyz/tag/twitch/unit/service/
+/src/main/frontend/

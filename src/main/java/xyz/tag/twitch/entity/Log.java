@@ -41,8 +41,6 @@ public class Log {
     private EStatus eStatus;
     private ZonedDateTime reqDateTime;
     private ZonedDateTime respDateTime;
-//    @ManyToOne
-//    private Device device;
 
     public Log(ESwitch eSwitch, EStatus eStatus, ZonedDateTime reqDateTime, ZonedDateTime respDateTime) {
         this.eSwitch = eSwitch;

@@ -1,6 +1,6 @@
 package xyz.tag.twitch.unit.feign;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,23 +29,23 @@ import static org.mockito.Mockito.when;
  * CELL      : +27-64-906-8809
  */
 @ExtendWith(MockitoExtension.class)
-@Slf4j
-public class FeignSwitchTest {
+@Log4j2
+class FeignSwitchTest {
     @Mock
     private ElectroDeviceFeignService electroDeviceFeignService;
 
     @BeforeEach
-    public void pretest() {
+    void pretest() {
         electroDeviceFeignService = mock(ElectroDeviceFeignService.class);
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         verify(electroDeviceFeignService, times(1)).invokeSwitch(any(), any());
     }
 
     @Test
-    public void givenDeviceID1_whenTogglingSwitchOnn_thenSucceedResp() {
+    void givenDeviceID1_whenTogglingSwitchOnn_thenSucceedResp() {
 //        mockClient.add(HttpMethod.PUT, "/device/1?switch=ONN", HttpsURLConnection.HTTP_ACCEPTED);
         when(electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.ONN))).thenReturn(new Resp(200, "Successful"));
         final Resp resp2 = electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.ONN));
@@ -53,7 +53,7 @@ public class FeignSwitchTest {
     }
 
     @Test
-    public void givenDeviceID1_whenTogglingSwitchOff_thenSucceedResp() {
+    void givenDeviceID1_whenTogglingSwitchOff_thenSucceedResp() {
 //        mockClient.add(HttpMethod.PUT, "/device/1?switch=OFF", HttpsURLConnection.HTTP_ACCEPTED);
         when(electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.OFF))).thenReturn(new Resp(200, "Successful"));
         final Resp resp1 = electroDeviceFeignService.invokeSwitch(1L, new Req(ESwitch.OFF));
