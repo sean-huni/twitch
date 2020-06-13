@@ -31,7 +31,7 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: sh gradlew dependencies --refresh-dependencies
+      - run: sh gradlew clean dependencies --refresh-dependencies
 
       - save_cache:
           paths:
@@ -96,7 +96,7 @@ jobs:
             - v1-dependencies-
 
       # run tests!
-      - run: sh gradlew test
+      - run: sh gradlew --refresh-dependencies dependencies test
 
       - save_cache:
           paths:
@@ -104,7 +104,7 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # Code Quality Metrics (Sonarqube) >> Code Quality Metrics (Sonarqube)
-      - run: ./gradlew sonarqube
+      - run: sh gradlew sonarqube
           -Dsonar.projectKey=sean-huni_twitch
           -Dsonar.organization=sean-huni-github
           -Dsonar.host.url=https://sonarcloud.io
