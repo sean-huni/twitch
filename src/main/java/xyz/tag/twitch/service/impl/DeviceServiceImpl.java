@@ -105,7 +105,7 @@ public class DeviceServiceImpl implements DeviceService {
             LOGGER.info("Extracted Device-Channel: {}", channel);
 
             resp = electroDeviceFeignService.invokeSwitch(channel, req);
-            if (HttpStatus.OK.equals(resp.getCode())) {
+            if (HttpStatus.OK.value() == resp.getCode()) {
                 log.setEStatus(EStatus.valueOf("ONLINE"));
             } else {
                 log.setEStatus(EStatus.valueOf("OFFLINE"));
