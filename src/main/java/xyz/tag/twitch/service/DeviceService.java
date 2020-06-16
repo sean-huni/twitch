@@ -4,7 +4,7 @@ import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
 import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.exception.DeviceNotFoundException;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ public interface DeviceService {
      * @param option
      * @return
      */
-    void toggleSwitch(Long id, ESwitch option) throws DeviceNotFound;
+    void toggleSwitch(Long id, ESwitch option) throws DeviceNotFoundException;
 
     Collection<DeviceDTO> findAllDevices();
 

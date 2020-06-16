@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.exception.DeviceNotFoundException;
 import xyz.tag.twitch.service.DeviceService;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -48,7 +48,7 @@ class DeviceControllerNegativeTest {
     @Test
     void givenDeviceById_whenHttpPutOnDevice_thenReturn404() throws Exception {
         assertNotNull(mockMvc);
-        doThrow(new DeviceNotFound("404 Device not Found Test.")).when(deviceService).toggleSwitch(anyLong(), any());
+        doThrow(new DeviceNotFoundException("404 Device not Found Test.")).when(deviceService).toggleSwitch(anyLong(), any());
         final MvcResult resp = mockMvc.perform(put("/api/v1/devices/00")
                 .content("{\"status\": \"ONN\"}")
                 .contentType("application/json;charset=UTF-8"))
