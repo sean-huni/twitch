@@ -3,20 +3,18 @@ package xyz.tag.twitch.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import xyz.tag.twitch.dto.DeviceDTO;
 import xyz.tag.twitch.dto.LogDTO;
 import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.dto.req.enums.ESwitchDTO;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.exception.DeviceNotFoundException;
 import xyz.tag.twitch.service.DeviceService;
 
 import java.util.Collection;
@@ -37,7 +35,7 @@ import java.util.Map;
 @RequestMapping("api/v1/devices")
 public class DeviceController {
     private final DeviceService deviceService;
-    private final Converter toSwitchDO;
+    private final Converter<ESwitchDTO, ESwitch> toSwitchDO;
 
     public DeviceController(DeviceService deviceService, @Qualifier("toSwitchDO") Converter toSwitchDO) {
         this.deviceService = deviceService;
@@ -66,12 +64,8 @@ public class DeviceController {
     }
 
     @PutMapping("{id}")
-    public void toggleSwitch(@PathVariable("id") Long id, @RequestBody ESwitchDTO option) {
-        log.info("Incoming PUT-Req: device-id: {}, switch: {}", id, option);
-        try {
-            deviceService.toggleSwitch(id, (ESwitch) toSwitchDO.convert(option));
-        } catch (DeviceNotFound dnf) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, dnf.getMessage());
-        }
+    public void toggleSwitch(@PathVariable("id") Long id, @RequestBody ESwitchDTO option) throws DeviceNotFoundException {
+        log.debug("Incoming PUT-Req: device-id: {}, switch: {}", id, option);
+        deviceService.toggleSwitch(id, toSwitchDO.convert(option));
     }
 }

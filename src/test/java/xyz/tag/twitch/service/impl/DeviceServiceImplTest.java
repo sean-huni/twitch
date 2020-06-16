@@ -16,7 +16,7 @@ import xyz.tag.twitch.dto.RollingLogDTO;
 import xyz.tag.twitch.dto.electrodev.Req;
 import xyz.tag.twitch.dto.electrodev.Resp;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.exception.DeviceNotFoundException;
 import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 import xyz.tag.twitch.service.DeviceService;
 
@@ -63,17 +63,17 @@ class DeviceServiceImplTest {
     }
 
     @Test
-    void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenVerifyInvocation() throws DeviceNotFound {
+    void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenVerifyInvocation() throws DeviceNotFoundException {
         deviceService.toggleSwitch(3L, ESwitch.ONN);
         verify(raspberryPiService, times(1)).invokeSwitch(2L, req);
     }
 
     @Test
-    void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenThrowDeviceNotFoundException_andVerifyZeroDeviceSwitchInteractions() throws DeviceNotFound {
+    void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenThrowDeviceNotFoundException_andVerifyZeroDeviceSwitchInteractions() throws DeviceNotFoundException {
         DeviceService deviceServiceLocal = mock(DeviceService.class);
-        doThrow(new DeviceNotFound("404 Device not Found Test.")).when(deviceServiceLocal).toggleSwitch(anyLong(), any());
+        doThrow(new DeviceNotFoundException("404 Device not Found Test.")).when(deviceServiceLocal).toggleSwitch(anyLong(), any());
 
-        Exception exception = assertThrows(DeviceNotFound.class, () -> deviceServiceLocal.toggleSwitch(1L, ESwitch.ONN));
+        Exception exception = assertThrows(DeviceNotFoundException.class, () -> deviceServiceLocal.toggleSwitch(1L, ESwitch.ONN));
 
         verify(raspberryPiService, times(0)).invokeSwitch(1L, req);
         assertEquals("404 Device not Found Test.", exception.getMessage());

@@ -18,7 +18,7 @@ import xyz.tag.twitch.entity.Log;
 import xyz.tag.twitch.entity.RespHealthCheckDO;
 import xyz.tag.twitch.enums.EStatus;
 import xyz.tag.twitch.enums.ESwitch;
-import xyz.tag.twitch.exception.DeviceNotFound;
+import xyz.tag.twitch.exception.DeviceNotFoundException;
 import xyz.tag.twitch.feign.ElectroDeviceFeignService;
 import xyz.tag.twitch.repo.DeviceRepo;
 import xyz.tag.twitch.repo.RespHealthCheckRepo;
@@ -87,9 +87,9 @@ public class DeviceServiceImpl implements DeviceService {
      * @param option To indicate the operation applied to the switch.
      */
     @Override
-    public void toggleSwitch(Long id, ESwitch option) throws DeviceNotFound {
+    public void toggleSwitch(Long id, ESwitch option) throws DeviceNotFoundException {
         Optional<Device> optionalDevice = deviceRepo.findById(id);
-        final Device device = optionalDevice.orElseThrow(() -> new DeviceNotFound("Device ID: " + id + " not found."));
+        final Device device = optionalDevice.orElseThrow(() -> new DeviceNotFoundException("Device ID: " + id + " not found."));
         final Boolean b = EStatus.ONLINE.getStatus().equals(option.getStatus());
         device.setOnn(b);
         EStatus status = EStatus.ONLINE;

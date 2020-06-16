@@ -118,7 +118,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - dev
       - test:
           requires:
             - build
