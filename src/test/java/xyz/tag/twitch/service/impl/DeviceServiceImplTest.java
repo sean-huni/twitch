@@ -71,12 +71,12 @@ class DeviceServiceImplTest {
     @Test
     void givenDeviceIdAndSwitchOpt_whenToggleSwitch_thenThrowDeviceNotFoundException_andVerifyZeroDeviceSwitchInteractions() throws DeviceNotFoundException {
         DeviceService deviceServiceLocal = mock(DeviceService.class);
-        doThrow(new DeviceNotFoundException("404 Device not Found Test.")).when(deviceServiceLocal).toggleSwitch(anyLong(), any());
+        doThrow(new DeviceNotFoundException("Device not Found Test.")).when(deviceServiceLocal).toggleSwitch(anyLong(), any());
 
         Exception exception = assertThrows(DeviceNotFoundException.class, () -> deviceServiceLocal.toggleSwitch(1L, ESwitch.ONN));
 
         verify(raspberryPiService, times(0)).invokeSwitch(1L, req);
-        assertEquals("404 Device not Found Test.", exception.getMessage());
+        assertEquals("Device not Found Test.", exception.getMessage());
     }
 
     @Test

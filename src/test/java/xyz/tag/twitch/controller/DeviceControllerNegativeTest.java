@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -48,12 +49,14 @@ class DeviceControllerNegativeTest {
     @Test
     void givenDeviceById_whenHttpPutOnDevice_thenReturn404() throws Exception {
         assertNotNull(mockMvc);
-        doThrow(new DeviceNotFoundException("404 Device not Found Test.")).when(deviceService).toggleSwitch(anyLong(), any());
+        doThrow(new DeviceNotFoundException("Device not Found Test.")).when(deviceService).toggleSwitch(anyLong(), any());
         final MvcResult resp = mockMvc.perform(put("/api/v1/devices/00")
                 .content("{\"status\": \"ONN\"}")
                 .contentType("application/json;charset=UTF-8"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$['errorMsg']").value("Device not Found Test."))
+                .andExpect(jsonPath("$['timestamp']").isNotEmpty())
                 .andReturn();
 
         verify(deviceService, times(1)).toggleSwitch(anyLong(), any());

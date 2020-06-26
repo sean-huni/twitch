@@ -117,7 +117,7 @@ public class DeviceServiceImpl implements DeviceService {
             log.setESwitch(ESwitch.OFF);
         }
         log.setRespDateTime(ZonedDateTime.now());
-        LOGGER.info("HTTP POST Response: {}", resp);
+        LOGGER.info("HTTP PUT Response: {}", resp);
         device.getLogs().add(log);
         deviceRepo.save(device);
     }

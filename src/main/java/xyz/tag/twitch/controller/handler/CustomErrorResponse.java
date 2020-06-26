@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 class CustomErrorResponse {
     private final String errorMsg;
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private final LocalDateTime timestamp;
 
-    public CustomErrorResponse(String errorMsg, LocalDateTime timestamp) {
+    CustomErrorResponse(String errorMsg, LocalDateTime timestamp) {
         this.errorMsg = errorMsg;
         this.timestamp = timestamp;
     }
